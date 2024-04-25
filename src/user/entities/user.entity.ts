@@ -15,7 +15,10 @@ export class User {
     @Prop({type: String})
     password?: string
 
+    @Prop({type: String})
+    email?: string
+
     createdAt?:Date
-    
+
     updatedAt?:Date
 }
