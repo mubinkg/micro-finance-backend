@@ -30,8 +30,12 @@ export class UserService {
     }
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    try{
+      return await this.userModel.find({})
+    }catch(err){
+      throw err;
+    }
   }
 
   findOne(id: number) {
