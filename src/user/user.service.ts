@@ -13,7 +13,12 @@ export class UserService {
   ){}
 
   async create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    try{
+      return await this.userModel.create(createUserDto)
+    }
+    catch(err){
+      throw err;
+    }
   }
 
   findAll() {
