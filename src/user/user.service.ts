@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './entities/user.entity';
 import { Model } from 'mongoose';
+import { MailService } from 'src/mail/mail.service';
 const generator = require('generate-password');
 
 
@@ -11,7 +12,8 @@ const generator = require('generate-password');
 export class UserService {
 
   constructor(
-    @InjectModel(User.name) private readonly userModel:Model<UserDocument>
+    @InjectModel(User.name) private readonly userModel:Model<UserDocument>,
+    private readonly mailService:MailService
   ){}
 
   async create(createUserDto: CreateUserDto) {
@@ -23,6 +25,7 @@ export class UserService {
       
       const user = await this.userModel.create({...createUserDto, password: password})
       user.password = ''
+      this.mailService.sendMail()
       return user
     }
     catch(err){
