@@ -17,7 +17,7 @@ export class MailService{
           Messages: [
             {
               From: {
-                Email: "givenchip@yahoo.com",
+                Email: "noreply@zimbacash.com",
                 Name: "Zimba Cash"
               },
               To: [
@@ -27,7 +27,7 @@ export class MailService{
                 }
               ],
               Subject: "Login With this code",
-              TextPart: "Dear",
+              TextPart: "Dear your code is : hjsfhsiuryew",
             }
           ]
         }).then((response) => {
