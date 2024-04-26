@@ -7,6 +7,9 @@ import * as morgan from 'morgan';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe())
+  app.enableCors({
+    origin: '*'
+  })
   app.use(morgan('tiny'));
   await app.listen(3001);
   console.log(`App started at http://localhost:3001`)

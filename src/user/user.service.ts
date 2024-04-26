@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { MailService } from 'src/mail/mail.service';
+import { UserSigninDto } from './dto/user-singin.dto';
 const generator = require('generate-password');
 
 
@@ -41,8 +42,11 @@ export class UserService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(userSigninDto:UserSigninDto) {
+    try{}
+    catch(err){
+      throw err;
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
