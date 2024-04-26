@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -6,6 +6,8 @@ import { User, UserDocument } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { MailService } from 'src/mail/mail.service';
 import { UserSigninDto } from './dto/user-singin.dto';
+import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt';
 const generator = require('generate-password');
 
 
@@ -14,19 +16,21 @@ export class UserService {
 
   constructor(
     @InjectModel(User.name) private readonly userModel:Model<UserDocument>,
-    private readonly mailService:MailService
+    private readonly mailService:MailService,
+    private readonly jwtService:JwtService
   ){}
 
   async create(createUserDto: CreateUserDto) {
     try{
-      const password = generator.generate({
+      let password = generator.generate({
         length: 10,
         numbers: true
       });
-      
+      const mailedPass = password
+      password = await bcrypt.hash(password, 10)
       const user = await this.userModel.create({...createUserDto, password: password})
       user.password = ''
-      this.mailService.sendMail()
+      this.mailService.sendMail(mailedPass, user.email)
       return user
     }
     catch(err){
@@ -43,7 +47,27 @@ export class UserService {
   }
 
   async findOne(userSigninDto:UserSigninDto) {
-    try{}
+    try{
+      const user = await this.userModel.findOne({email: userSigninDto.email})
+      if(!user){
+        throw new UnauthorizedException('User not found.')
+      }
+      const isMatch = await bcrypt.compare(userSigninDto.password, user.password)
+      if(!isMatch){
+        throw new UnauthorizedException('Passeord is incorrect.')
+      }
+      const payload = {
+        _id: user._id,
+        email: user.email
+      }
+
+      const token = await this.jwtService.signAsync(payload)
+      const resData = {
+        user: user,
+        token: token
+      }
+      return resData
+    }
     catch(err){
       throw err;
     }

@@ -10,7 +10,7 @@ export class MailService{
             apiSecret: "6c81aa4fa5bad3b95ea1f27d615b3eb9"
         });
     }
-    sendMail(){
+    sendMail(data:string, email:string){
         this.myMailjet
         .post('send', { version: 'v3.1' })
         .request({
@@ -22,12 +22,12 @@ export class MailService{
               },
               To: [
                 {
-                  Email: "mubin.ice.ru@gmail.com",
+                  Email:email,
                   Name: "Mubin"
                 }
               ],
               Subject: "Login With this code",
-              TextPart: "Dear your code is : hjsfhsiuryew",
+              TextPart: `Your password to login zimbacash : ${data}`,
             }
           ]
         }).then((response) => {

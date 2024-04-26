@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserSigninDto } from './dto/user-singin.dto';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -18,9 +19,18 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('singin')
-  findOne(@Body() userSigninDto: UserSigninDto) {
-    return this.userService.findOne(userSigninDto);
+  @Post('signin')
+  async findOne(
+    @Body() userSigninDto: UserSigninDto,
+    @Res({ passthrough: true }) response: Response
+  ) {
+    try{
+      const userData = await this.userService.findOne(userSigninDto)
+      response.cookie('token', userData.token)
+      return userData
+    }catch(err){
+      throw err
+    }
   }
 
   @Patch(':id')
