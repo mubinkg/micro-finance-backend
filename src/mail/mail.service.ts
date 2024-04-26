@@ -18,18 +18,23 @@ export class MailService{
             {
               From: {
                 Email: "givenchip@yahoo.com",
-                Name: "Mailjet Pilot"
+                Name: "Zimba Cash"
               },
               To: [
                 {
                   Email: "mubin.ice.ru@gmail.com",
-                  Name: "passenger"
+                  Name: "Mubin"
                 }
               ],
-              Subject: "Your email flight plan!",
+              Subject: "Login With this code",
               TextPart: "Dear",
             }
           ]
+        }).then((response) => {
+          
         })
+        .catch((error) => {
+          
+        });
     }
 }
