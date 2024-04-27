@@ -19,6 +19,9 @@ export class User {
     @Prop({type: String})
     email?: string
 
+    @Prop({type: String, default: 'user'})
+    role?: string
+
     createdAt?:Date
 
     updatedAt?:Date
