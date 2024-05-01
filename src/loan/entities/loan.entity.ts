@@ -1,4 +1,5 @@
-import { Prop, Schema } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
 
 @Schema({
     timestamps: true
@@ -78,3 +79,7 @@ export class Loan {
     @Prop({type:String})
     paymentMethod?: string
 }
+
+
+export type LoadDocument = HydratedDocument<Loan>
+export const LoanSchema = SchemaFactory.createForClass(Loan)
