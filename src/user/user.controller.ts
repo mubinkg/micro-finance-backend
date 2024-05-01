@@ -27,9 +27,19 @@ export class UserController {
     try{
       const userData = await this.userService.findOne(userSigninDto)
       response.cookie('token', userData.token)
+      response.cookie('role', userData.user.role)
       return userData
     }catch(err){
       throw err
+    }
+  }
+
+  @Get('logout')
+  logout(@Res({ passthrough: true }) response: Response){
+    response.clearCookie('token')
+    response.clearCookie('role')
+    return {
+      msg: 'Cookie deleted'
     }
   }
 
