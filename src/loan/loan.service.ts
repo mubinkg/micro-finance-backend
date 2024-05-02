@@ -21,8 +21,12 @@ export class LoanService {
     }
   }
 
-  findAll() {
-    return `This action returns all loan`;
+  async findAll() {
+    try{
+      return await this.loanModel.find({})
+    }catch(err){
+      throw err;
+    }
   }
 
   findOne(id: number) {

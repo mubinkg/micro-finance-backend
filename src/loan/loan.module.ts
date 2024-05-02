@@ -4,7 +4,6 @@ import { LoanController } from './loan.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import * as path from 'path';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Loan, LoanSchema } from './entities/loan.entity';
 
@@ -20,9 +19,6 @@ import { Loan, LoanSchema } from './entities/loan.entity';
           cb(null, Date.now() + extension); // Combine timestamp and extension
         },
       }),
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname,'..','client')
     }),
     MongooseModule.forFeature([
       {
