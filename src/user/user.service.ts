@@ -58,7 +58,8 @@ export class UserService {
       }
       const payload = {
         _id: user._id,
-        email: user.email
+        email: user.email,
+        role:user.role
       }
 
       const token = await this.jwtService.signAsync(payload)
