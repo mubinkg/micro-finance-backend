@@ -22,7 +22,7 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try{
-      const isExist = this.userModel.findOne({email: createUserDto.email})
+      const isExist = this.userModel.exists({email: createUserDto.email})
       if(isExist){
         throw new NotAcceptableException('User already exist')
       }
