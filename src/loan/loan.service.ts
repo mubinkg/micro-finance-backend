@@ -23,7 +23,10 @@ export class LoanService {
 
   async findAll() {
     try{
-      return await this.loanModel.find({})
+      const data = {
+        loans: await this.loanModel.find({})
+      }
+      return data
     }catch(err){
       throw err;
     }
