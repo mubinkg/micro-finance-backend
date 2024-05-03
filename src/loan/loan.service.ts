@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -24,6 +24,7 @@ export class LoanService {
   async findAll() {
     try{
       const data = {
+        count: await this.loanModel.countDocuments({}),
         loans: await this.loanModel.find({})
       }
       return data
@@ -32,8 +33,16 @@ export class LoanService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} loan`;
+  async findOne(id: string) {
+    try{
+      if(!id){
+        throw new NotAcceptableException('Give Valid Id')
+      }
+      return await this.loanModel.findById(id)
+    }
+    catch(err){
+      throw err;
+    }
   }
 
   update(id: number, updateLoanDto: UpdateLoanDto) {

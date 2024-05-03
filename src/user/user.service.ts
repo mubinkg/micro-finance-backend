@@ -40,7 +40,10 @@ export class UserService {
 
   async findAll() {
     try{
-      return await this.userModel.find({})
+      return {
+        users: await this.userModel.find({}),
+        count: await this.userModel.countDocuments({})
+      }
     }catch(err){
       throw err;
     }
