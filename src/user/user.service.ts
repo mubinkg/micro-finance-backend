@@ -49,8 +49,8 @@ export class UserService {
   async findOne(userSigninDto:UserSigninDto) {
     try{
       const user = await this.userModel.findOne({email: userSigninDto.email})
-      if(!user){
-        throw new UnauthorizedException('User not found.')
+      if(user){
+        throw new UnauthorizedException('Already registered')
       }
       const isMatch = await bcrypt.compare(userSigninDto.password, user.password)
       if(!isMatch){
