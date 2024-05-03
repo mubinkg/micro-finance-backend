@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -22,6 +22,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try{
+      const isExist = this.userModel.findOne({email: createUserDto.email})
+      if(isExist){
+        throw new NotAcceptableException('User already exist')
+      }
       let password = generator.generate({
         length: 10,
         numbers: true
@@ -49,7 +53,7 @@ export class UserService {
   async findOne(userSigninDto:UserSigninDto) {
     try{
       const user = await this.userModel.findOne({email: userSigninDto.email})
-      if(user){
+      if(!user){
         throw new UnauthorizedException('Already registered')
       }
       const isMatch = await bcrypt.compare(userSigninDto.password, user.password)
