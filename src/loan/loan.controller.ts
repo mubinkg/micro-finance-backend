@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, UnauthorizedException, NotAcceptableException } from '@nestjs/common';
 import { LoanService } from './loan.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
@@ -37,24 +37,32 @@ export class LoanController {
       if(checkBack){
         checkBack = uuidv4()+files?.checkBack[0]?.originalname
         checkBack = await this.loanService.uploadImage(files.checkBack[0].buffer, checkBack) as string
+      }else{
+        throw new NotAcceptableException('Give check back image')
       }
       
       let checkFront = files?.checkFront ? files?.checkFront[0]?.originalname : null
       if(checkFront){
         checkFront = uuidv4() + checkFront
         checkFront = await this.loanService.uploadImage(files.checkFront[0].buffer, checkFront) as string
+      }else{
+        throw new NotAcceptableException('Give check front image')
       }
       
       let driverLicenseImage = files?.driverLicenseImage ? files?.driverLicenseImage[0]?.originalname : null
       if(driverLicenseImage){
         driverLicenseImage = uuidv4()+driverLicenseImage
         driverLicenseImage = await this.loanService.uploadImage(files.driverLicenseImage[0].buffer, driverLicenseImage) as string
+      }else{
+        throw new NotAcceptableException('Give driver license image')
       }
       
       let paystubs = files?.paystubs ? files?.paystubs[0]?.originalname : null;
       if(paystubs){
         paystubs =  uuidv4()+paystubs
         paystubs = await this.loanService.uploadImage(files.paystubs[0].buffer, paystubs) as string
+      }else{
+        throw new NotAcceptableException('Give paystubs image')
       }
       
       createLoanDto.checkBack = checkBack
