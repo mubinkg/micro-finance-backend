@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { LoanService } from './loan.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
@@ -87,8 +87,15 @@ export class LoanController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
-    return this.loanService.update(+id, updateLoanDto);
+  @UseGuards(JwtAuthGuard)
+  update(
+    @Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto,
+    @User('user') user:any
+  ) {
+    if(user.role !== 'admin'){
+      throw new UnauthorizedException('Only admin can update loan status')
+    }
+    return this.loanService.update(id, updateLoanDto);
   }
 
   @Delete(':id')

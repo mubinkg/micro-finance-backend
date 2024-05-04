@@ -55,8 +55,14 @@ export class LoanService {
     }
   }
 
-  update(id: number, updateLoanDto: UpdateLoanDto) {
-    return `This action updates a #${id} loan`;
+  async update(id: string, updateLoanDto: UpdateLoanDto) {
+    try{
+      await this.loanModel.findByIdAndUpdate(id, {status: updateLoanDto.status})
+      return await this.loanModel.findById(id)
+    }
+    catch(err){
+      throw err;
+    }
   }
 
   remove(id: number) {
