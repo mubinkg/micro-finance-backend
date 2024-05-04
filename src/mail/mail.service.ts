@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { CreateMail } from "./dto/create-mail.input";
 const Mailjet = require('node-mailjet');
 
 @Injectable()
@@ -10,6 +11,7 @@ export class MailService{
             apiSecret: "6c81aa4fa5bad3b95ea1f27d615b3eb9"
         });
     }
+
     sendMail(data:string, email:string){
         this.myMailjet
         .post('send', { version: 'v3.1' })
@@ -36,5 +38,35 @@ export class MailService{
         .catch((error) => {
           
         });
+    }
+
+    sendMailFromUser(createMail:CreateMail){
+      this.myMailjet
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: createMail.email,
+                Name: createMail.firstName + " " + createMail.lastName
+              },
+              To: [
+                {
+                  Email: "admin@zimbacash.com",
+                  Name: "Zimba Cash"
+                }
+              ],
+              Subject: createMail.subject,
+              TextPart: createMail.body,
+            }
+          ]
+        }).then((response) => {
+          
+        })
+        .catch((error) => {
+          
+        });
+
+        return 'Mail sent'
     }
 }
