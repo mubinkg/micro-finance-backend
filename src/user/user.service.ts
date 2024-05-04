@@ -43,6 +43,26 @@ export class UserService {
     }
   }
 
+  async resetPassword(email: string){
+    try{
+      const isExist = await this.userModel.findOne({email: email.toLowerCase()})
+      if(!isExist){
+        throw new NotAcceptableException('No user found')
+      }
+      let password = generator.generate({
+        length: 10,
+        numbers: true
+      });
+      const mailedPass = password 
+      password = await bcrypt.hash(password, 10)
+      const user = await this.userModel.updateOne({email: email.toLowerCase()}, {$set: {password:password}})
+      this.mailService.sendMail(mailedPass, email)
+      return 'Password reset success'
+    }catch(err){
+      throw err;
+    }
+  }
+
   async findAll() {
     try{
       return {

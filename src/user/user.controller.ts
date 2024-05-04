@@ -34,6 +34,13 @@ export class UserController {
     }
   }
 
+  @Post('reset-password')
+  async resetPassword(
+    @Body() email: any
+  ){
+    return this.userService.resetPassword(email?.email)
+  }
+
   @Get('logout')
   logout(@Res({ passthrough: true }) response: Response){
     response.clearCookie('token')

@@ -26,7 +26,7 @@ export class MailService{
                   Name: "Mubin"
                 }
               ],
-              Subject: "Login With this code",
+              Subject: "Login with this code",
               TextPart: `Your password to login zimbacash : ${data}`,
             }
           ]
