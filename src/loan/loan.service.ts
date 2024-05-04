@@ -63,6 +63,14 @@ export class LoanService {
     return `This action removes a #${id} loan`;
   }
 
+  async getUserLoan(userId:string){
+    try{
+      return await this.loanModel.find({user: userId})
+    }catch(err){
+      throw err
+    }
+  }
+
   async uploadImage(imageStream:any, objectKey:any){
     const params = {
       Bucket: "zimbacash-bucket",

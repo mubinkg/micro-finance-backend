@@ -6,6 +6,7 @@ import { User, UserSchema } from './entities/user.entity';
 import { MailModule } from 'src/mail/mail.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { JwtAuthGuard } from './jwt.guard';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtStrategy],
+  providers: [UserService, JwtStrategy, JwtAuthGuard],
 })
 export class UserModule {}

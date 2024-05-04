@@ -1,11 +1,15 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
+import { User } from "src/user/entities/user.entity";
 
 @Schema({
     timestamps: true
 })
 export class Loan {
     _id: string
+
+    @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
+    user?: User
 
     @Prop({type:String})
     firstName?: string

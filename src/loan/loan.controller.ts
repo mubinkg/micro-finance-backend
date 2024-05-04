@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards } from '@nestjs/common';
 import { LoanService } from './loan.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
+import { JwtAuthGuard } from 'src/user/jwt.guard';
+import { User } from 'src/decorators/currentuser.decorator';
 
 @Controller('loan')
 export class LoanController {
   constructor(private readonly loanService: LoanService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'driverLicenseImage', maxCount: 1},
     { name: 'checkFront', maxCount: 1 },
@@ -18,6 +21,7 @@ export class LoanController {
   ]))
   
   async create(
+    @User('user') user:any,
     @Body() createLoanDto: CreateLoanDto,
     @UploadedFiles() files: { 
       driverLicenseImage?: Express.Multer.File[],
@@ -27,6 +31,7 @@ export class LoanController {
     }
   ) {
     try{
+      createLoanDto.user = user.userId
       
       let checkBack = files?.checkBack ? files?.checkBack[0]?.originalname : null
       if(checkBack){
@@ -63,6 +68,14 @@ export class LoanController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/user-loan')
+  getUerLoan(
+    @User('user') user:any
+  ){
+    return this.loanService.getUserLoan(user.userId)
+  }
+
   @Get()
   findAll() {
     return this.loanService.findAll();
@@ -82,4 +95,5 @@ export class LoanController {
   remove(@Param('id') id: string) {
     return this.loanService.remove(+id);
   }
+
 }

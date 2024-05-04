@@ -96,4 +96,6 @@ export class CreateLoanDto {
     @IsString()
     @IsNotEmpty()
     paymentDetails?: string
+
+    user?: string
 }
