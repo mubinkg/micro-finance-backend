@@ -14,7 +14,7 @@ async function bootstrap() {
   app.enableCors({
     origin: '*'
   })
-  app.use(morgan('tiny'));
+  app.use(morgan(':date[clf] ":method :url"'));
   await app.listen(3001);
   console.log(`App started at http://localhost:3001`)
 }
