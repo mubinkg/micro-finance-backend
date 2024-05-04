@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MAX, MaxLength } from "class-validator"
+import { IsNotEmpty, IsOptional, IsString, MAX, MaxLength } from "class-validator"
 
 export class CreateLoanDto {
 
@@ -21,7 +21,7 @@ export class CreateLoanDto {
     currentAddress?: string
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     currentAddress2?: string
 
     @IsString()
@@ -97,5 +97,9 @@ export class CreateLoanDto {
     @IsNotEmpty()
     paymentDetails?: string
 
+    @IsString()
+    @IsNotEmpty()
+    signature?: string
+    
     user?: string
 }

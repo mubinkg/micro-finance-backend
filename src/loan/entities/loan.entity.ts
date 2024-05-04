@@ -43,6 +43,9 @@ export class Loan {
 
     @Prop({type:String})
     ssn?: string
+    
+    @Prop({type:String})
+    signature?: string
 
     @Prop({type:String})
     driverLicenseImage?: string
