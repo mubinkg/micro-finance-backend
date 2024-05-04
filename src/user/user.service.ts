@@ -22,6 +22,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try{
+      const isExist = await this.userModel.findOne({email: createUserDto.email})
+      if(isExist){
+        throw new NotAcceptableException('Already registered with this email.')
+      }
       let password = generator.generate({
         length: 10,
         numbers: true
