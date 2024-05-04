@@ -81,6 +81,9 @@ export class Loan {
 
     @Prop({type:String})
     paymentDetails?: string
+
+    @Prop({type:String, default: 'pending'})
+    status?: string
 }
 
 
