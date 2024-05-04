@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator"
+import { IsNotEmpty, IsString, MAX, MaxLength } from "class-validator"
 
 export class CreateLoanDto {
 
@@ -38,6 +38,7 @@ export class CreateLoanDto {
 
     @IsString()
     @IsNotEmpty()
+    @MaxLength(10)
     cellPhone?: string
 
     @IsString()
@@ -64,6 +65,7 @@ export class CreateLoanDto {
 
     @IsString()
     @IsNotEmpty()
+    @MaxLength(10)
     referenceOnePhone?: string
 
     @IsString()
@@ -76,6 +78,7 @@ export class CreateLoanDto {
 
     @IsString()
     @IsNotEmpty()
+    @MaxLength(10)
     referenceTwoPhone?: string
 
     @IsString()
@@ -89,4 +92,8 @@ export class CreateLoanDto {
     @IsString()
     @IsNotEmpty()
     paymentMethod?: string
+
+    @IsString()
+    @IsNotEmpty()
+    paymentDetails?: string
 }

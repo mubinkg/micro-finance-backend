@@ -78,6 +78,9 @@ export class Loan {
 
     @Prop({type:String})
     paymentMethod?: string
+
+    @Prop({type:String})
+    paymentDetails?: string
 }
 
 
