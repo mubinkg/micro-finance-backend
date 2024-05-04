@@ -22,6 +22,7 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try{
+      createUserDto.email = createUserDto.email.toLowerCase()
       const isExist = await this.userModel.findOne({email: createUserDto.email})
       if(isExist){
         throw new NotAcceptableException('Already registered with this email.')
@@ -55,6 +56,7 @@ export class UserService {
 
   async findOne(userSigninDto:UserSigninDto) {
     try{
+      userSigninDto.email = userSigninDto.email.toLowerCase()
       const user = await this.userModel.findOne({email: userSigninDto.email})
       if(!user){
         throw new UnauthorizedException('Already registered')
