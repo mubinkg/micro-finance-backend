@@ -91,6 +91,12 @@ export class Loan {
 
     @Prop({type:String, default: 'pending'})
     status?: string
+
+    @Prop({type:String})
+    amountDueDate?: string
+
+    @Prop({type:String})
+    amoundRequestedDate?: string
 }
 
 

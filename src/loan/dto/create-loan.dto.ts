@@ -100,6 +100,14 @@ export class CreateLoanDto {
     @IsString()
     @IsNotEmpty()
     signature?: string
+
+    @IsString()
+    @IsNotEmpty()
+    amountDueDate?: string
+
+    @IsString()
+    @IsNotEmpty()
+    amoundRequestedDate?: string
     
     user?: string
 }

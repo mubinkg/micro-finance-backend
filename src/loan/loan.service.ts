@@ -35,7 +35,7 @@ export class LoanService {
     try{
       const data = {
         count: await this.loanModel.countDocuments({}),
-        loans: await this.loanModel.find({})
+        loans: await this.loanModel.find({}).sort('-_id')
       }
       return data
     }catch(err){
@@ -71,7 +71,7 @@ export class LoanService {
 
   async getUserLoan(userId:string){
     try{
-      return await this.loanModel.find({user: userId})
+      return await this.loanModel.find({user: userId}).sort('-_id')
     }catch(err){
       throw err
     }
