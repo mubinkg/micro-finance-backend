@@ -35,7 +35,7 @@ export class UserService {
       password = await bcrypt.hash(password, 10)
       const user = await this.userModel.create({...createUserDto, password: password})
       user.password = ''
-      this.mailService.sendMail(mailedPass, user.email)
+      this.mailService.sendMail(mailedPass, user.email, user.firstName+user.lastName)
       return user
     }
     catch(err){
@@ -55,8 +55,9 @@ export class UserService {
       });
       const mailedPass = password 
       password = await bcrypt.hash(password, 10)
-      const user = await this.userModel.updateOne({email: email.toLowerCase()}, {$set: {password:password}})
-      this.mailService.sendMail(mailedPass, email)
+      await this.userModel.updateOne({email: email.toLowerCase()}, {$set: {password:password}})
+      const user = await this.userModel.findOne({email: email})
+      this.mailService.sendMail(mailedPass, email, user.firstName+user.lastName)
       return 'Password reset success'
     }catch(err){
       throw err;

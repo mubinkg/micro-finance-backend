@@ -12,7 +12,7 @@ export class MailService{
         });
     }
 
-    sendMail(data:string, email:string){
+    sendMail(data:string, email:string, userName: string){
         this.myMailjet
         .post('send', { version: 'v3.1' })
         .request({
@@ -25,11 +25,11 @@ export class MailService{
               To: [
                 {
                   Email:email,
-                  Name: "Mubin"
+                  Name: userName
                 }
               ],
-              Subject: "Login with this code",
-              TextPart: `Your password to login zimbacash : ${data}`,
+              Subject: "Login with attached code",
+              TextPart: `Your password to login to ZimbaCash : ${data}`,
             }
           ]
         }).then((response) => {
