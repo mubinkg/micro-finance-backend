@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, UnauthorizedException, NotAcceptableException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, UnauthorizedException, NotAcceptableException, Put } from '@nestjs/common';
 import { LoanService } from './loan.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
@@ -6,6 +6,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtAuthGuard } from 'src/user/jwt.guard';
 import { User } from 'src/decorators/currentuser.decorator';
+import { UpdateLoanDetailsDto } from './dto/update-loan-details';
 
 @Controller('loan')
 export class LoanController {
@@ -104,6 +105,61 @@ export class LoanController {
       throw new UnauthorizedException('Only admin can update loan status')
     }
     return this.loanService.update(id, updateLoanDto);
+  }
+
+  @Put()
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'driverLicenseImage', maxCount: 1},
+    { name: 'checkFront', maxCount: 1 },
+    { name: 'checkBack', maxCount: 1 },
+    { name: 'paystubs', maxCount: 1 },
+  ]))
+  async updateLoan(
+    @UploadedFiles() files: { 
+      driverLicenseImage?: Express.Multer.File[],
+      checkFront?: Express.Multer.File[],
+      checkBack?: Express.Multer.File[],
+      paystubs?: Express.Multer.File[],
+    },
+    @Body() updateLoanDetails: UpdateLoanDetailsDto,
+  ){
+    try{
+      let checkBack = files?.checkBack ? files?.checkBack[0]?.originalname : null
+      if(checkBack){
+        checkBack = uuidv4()+files?.checkBack[0]?.originalname
+        checkBack = await this.loanService.uploadImage(files.checkBack[0].buffer, checkBack) as string
+        updateLoanDetails['checkBack'] = checkBack
+      }
+      
+      let checkFront = files?.checkFront ? files?.checkFront[0]?.originalname : null
+      if(checkFront){
+        checkFront = uuidv4() + checkFront
+        checkFront = await this.loanService.uploadImage(files.checkFront[0].buffer, checkFront) as string
+        updateLoanDetails['checkFront'] = checkFront
+      }
+      
+      let driverLicenseImage = files?.driverLicenseImage ? files?.driverLicenseImage[0]?.originalname : null
+      if(driverLicenseImage){
+        driverLicenseImage = uuidv4()+driverLicenseImage
+        driverLicenseImage = await this.loanService.uploadImage(files.driverLicenseImage[0].buffer, driverLicenseImage) as string
+        updateLoanDetails['driverLicenseImage'] = driverLicenseImage
+      }
+      
+      let paystubs = files?.paystubs ? files?.paystubs[0]?.originalname : null;
+      if(paystubs){
+        paystubs =  uuidv4()+paystubs
+        paystubs = await this.loanService.uploadImage(files.paystubs[0].buffer, paystubs) as string
+        updateLoanDetails['paystubs'] = paystubs
+      }
+      const id = updateLoanDetails.id
+      delete updateLoanDetails.id
+      await this.loanService.updateLoanDetails(id, updateLoanDetails)
+      return 'Loan resubmitted successfully.'
+    }
+    catch(err){
+      throw err;
+    }
   }
 
   @Delete(':id')

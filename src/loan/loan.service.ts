@@ -77,6 +77,17 @@ export class LoanService {
     }
   }
 
+
+  async updateLoanDetails(id:string, data:any){
+    try{
+      await this.loanModel.findByIdAndUpdate(id, {...data, status:'pending'})
+      return true
+    }
+    catch(err){
+      throw err;
+    }
+  }
+
   async uploadImage(imageStream:any, objectKey:any){
     const params = {
       Bucket: "zimbacash-bucket",
