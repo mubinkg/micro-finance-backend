@@ -178,4 +178,13 @@ export class LoanController {
     return this.loanService.remove(+id);
   }
 
+  @Get('total-approved-load')
+  @UseGuards(JwtAuthGuard)
+  totalApprovedLoan(
+    @User('user') user:any
+  ){
+    const userId = user.userId
+    return this.loanService.getTotalApprovedLoan(userId)
+  }
+
 }

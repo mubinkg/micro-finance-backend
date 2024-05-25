@@ -22,7 +22,7 @@ export class User {
     @Prop({type: String, default: 'user'})
     role?: string
 
-    @Prop({type: Number, default: 'user'})
+    @Prop({type: Number, default: 0})
     totalApprovedLoan?: number
 
     createdAt?:Date

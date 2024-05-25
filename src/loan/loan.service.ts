@@ -3,7 +3,7 @@ import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoadDocument, Loan } from './entities/loan.entity';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 const AWS = require('aws-sdk');
 const fs = require('fs');
 
@@ -105,5 +105,14 @@ export class LoanService {
         }
       });
     })
+  }
+
+  async getTotalApprovedLoan(userId:string){
+    try{
+      return await this.loanModel.countDocuments({user: new mongoose.Schema.Types.ObjectId(userId)});
+    }
+    catch(err){
+      throw err;
+    }
   }
 }
