@@ -22,6 +22,9 @@ export class User {
     @Prop({type: String, default: 'user'})
     role?: string
 
+    @Prop({type: Number, default: 'user'})
+    totalApprovedLoan?: number
+
     createdAt?:Date
 
     updatedAt?:Date

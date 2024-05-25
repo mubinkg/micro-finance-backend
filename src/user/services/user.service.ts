@@ -1,11 +1,11 @@
 import { Injectable, NotAcceptableException, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './entities/user.entity';
+import { User, UserDocument } from '../entities/user.entity';
 import { Model } from 'mongoose';
 import { MailService } from 'src/mail/mail.service';
-import { UserSigninDto } from './dto/user-singin.dto';
+import { UserSigninDto } from '../dto/user-singin.dto';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 const generator = require('generate-password');

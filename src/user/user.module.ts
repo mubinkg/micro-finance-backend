@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
+import { UserService } from './services/user.service';
+import { UserController } from './controllers/user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.entity';
 import { MailModule } from 'src/mail/mail.module';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt.strategy';
-import { JwtAuthGuard } from './jwt.guard';
+import { UserLoanServie } from './services/user-loan.service';
+import { JwtAuthGuard } from './jwt/jwt.guard';
+import { JwtStrategy } from './jwt/jwt.strategy';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { JwtAuthGuard } from './jwt.guard';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtStrategy, JwtAuthGuard],
+  providers: [UserService, JwtStrategy, JwtAuthGuard, UserLoanServie],
+  exports: [UserLoanServie]
 })
 export class UserModule {}
