@@ -111,7 +111,7 @@ export class LoanService {
 
   async getTotalApprovedLoan(userId: string) {
       
-    let maxLoanAmount=0
+    let maxLoanAmount=400
     try {
 
       const numberOfUnPaidApprovedLoan = await this.loanModel.countDocuments({
