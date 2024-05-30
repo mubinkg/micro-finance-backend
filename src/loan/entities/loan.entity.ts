@@ -8,7 +8,7 @@ import { LoanStatus } from "../enum/loanStatus.enum";
     timestamps: true
 })
 export class Loan {
-    _id: string
+    _id?: string
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
     user?: User

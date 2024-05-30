@@ -89,15 +89,15 @@ export class LoanController {
     return this.loanService.getUserLoan(user.userId)
   }
 
-  @Get()
-  findAll() {
-    return this.loanService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.loanService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.loanService.findOne(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.loanService.findOne(id);
+  // }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
@@ -173,17 +173,17 @@ export class LoanController {
     }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.loanService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.loanService.remove(+id);
+  // }
 
-  @Get('total-approved-load')
+  @Get('total-approved-loan')
   @UseGuards(JwtAuthGuard)
   totalApprovedLoan(
     @User('user') user:any
   ){
-    const userId = user.userId
+    const userId = user?.userId
     return this.loanService.getTotalApprovedLoan(userId)
   }
 

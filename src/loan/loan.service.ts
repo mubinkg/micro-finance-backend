@@ -110,30 +110,26 @@ export class LoanService {
   }
 
   async getTotalApprovedLoan(userId: string) {
-
-    let maxLoanAmount
-
+      
+    let maxLoanAmount=0
     try {
 
       const numberOfUnPaidApprovedLoan = await this.loanModel.countDocuments({
-        user: new mongoose.Types.ObjectId('userId'),
+        "user._id": new mongoose.Schema.Types.ObjectId('userId'),
         status: LoanStatus.APPROVED,
         loanPaidStatus: PaidStatus.UNPAID,
       });
-
       if(numberOfUnPaidApprovedLoan>0){
         throw new NotAcceptableException('Your previous loans must be in PAID status to qualify for next loan')
       }
-
-      const numberOfRejectedLoan = await this.loanModel.countDocuments({user:new mongoose.Types.ObjectId(userId),status:LoanStatus.REJECTED})
+      const numberOfRejectedLoan = await this.loanModel.countDocuments({"user._id":new mongoose.Schema.Types.ObjectId(userId),status:LoanStatus.REJECTED})
 
       if(numberOfRejectedLoan>=5){
         maxLoanAmount = 400
       }
       else{
-
         const numberOfApprovedLoan = await this.loanModel.countDocuments({
-          user: new mongoose.Types.ObjectId(userId),
+          "user._id": new mongoose.Schema.Types.ObjectId(userId),
           status: LoanStatus.APPROVED,
         });
       
