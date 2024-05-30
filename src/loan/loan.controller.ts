@@ -94,11 +94,6 @@ export class LoanController {
   //   return this.loanService.findAll();
   // }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.loanService.findOne(id);
-  // }
-
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(
@@ -178,13 +173,18 @@ export class LoanController {
   //   return this.loanService.remove(+id);
   // }
 
-  @Get('total-approved-loan')
+  @Get('/total-approved-loan')
   @UseGuards(JwtAuthGuard)
   totalApprovedLoan(
     @User('user') user:any
   ){
     const userId = user?.userId
     return this.loanService.getTotalApprovedLoan(userId)
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.loanService.findOne(id);
   }
 
 }
