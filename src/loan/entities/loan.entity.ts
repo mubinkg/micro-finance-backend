@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 import { User } from "src/user/entities/user.entity";
+import { PaidStatus } from "../enum/paidStatus.enum";
+import { LoanStatus } from "../enum/loanStatus.enum";
 
 @Schema({
     timestamps: true
@@ -89,9 +91,12 @@ export class Loan {
     @Prop({type:String})
     paymentDetails?: string
 
-    @Prop({type:String, default: 'pending'})
+    @Prop({type:String, default:LoanStatus.PENDING,enum:LoanStatus})
     status?: string
 
+    @Prop({type:String, default:PaidStatus.UNPAID, enum:PaidStatus})
+    loanPaidStatus?: string
+    
     @Prop({type:String})
     amountDueDate?: string
 

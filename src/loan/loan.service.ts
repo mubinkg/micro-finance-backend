@@ -4,6 +4,8 @@ import { UpdateLoanDto } from './dto/update-loan.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoadDocument, Loan } from './entities/loan.entity';
 import mongoose, { Model } from 'mongoose';
+import { LoanStatus } from './enum/loanStatus.enum';
+import { PaidStatus } from './enum/paidStatus.enum';
 const AWS = require('aws-sdk');
 const fs = require('fs');
 
