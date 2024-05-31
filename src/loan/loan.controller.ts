@@ -89,15 +89,11 @@ export class LoanController {
     return this.loanService.getUserLoan(user.userId)
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.loanService.findAll();
-  // }
-
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto,
+    @Param('id') id: string,
+    @Body() updateLoanDto: UpdateLoanDto,
     @User('user') user: any
   ) {
     if (user.role !== 'admin') {
@@ -185,6 +181,11 @@ export class LoanController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.loanService.findOne(id);
+  }
+
+  @Get()
+  findAll() {
+    return this.loanService.findAll();
   }
 
 }

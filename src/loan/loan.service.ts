@@ -59,7 +59,13 @@ export class LoanService {
 
   async update(id: string, updateLoanDto: UpdateLoanDto) {
     try{
-      await this.loanModel.findByIdAndUpdate(id, {status: updateLoanDto.status})
+      const updatedData = {
+        status: updateLoanDto.status
+      }
+      if(updateLoanDto?.comments){
+        updatedData['comments'] = updateLoanDto.comments
+      }
+      await this.loanModel.findByIdAndUpdate(id,updatedData)
       return await this.loanModel.findById(id)
     }
     catch(err){
