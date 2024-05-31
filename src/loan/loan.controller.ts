@@ -89,20 +89,11 @@ export class LoanController {
     return this.loanService.getUserLoan(user.userId)
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.loanService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.loanService.findOne(id);
-  // }
-
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto,
+    @Param('id') id: string,
+    @Body() updateLoanDto: UpdateLoanDto,
     @User('user') user: any
   ) {
     if (user.role !== 'admin') {
@@ -178,13 +169,23 @@ export class LoanController {
   //   return this.loanService.remove(+id);
   // }
 
-  @Get('total-approved-loan')
+  @Get('/total-approved-loan')
   @UseGuards(JwtAuthGuard)
   totalApprovedLoan(
     @User('user') user:any
   ){
     const userId = user?.userId
     return this.loanService.getTotalApprovedLoan(userId)
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.loanService.findOne(id);
+  }
+
+  @Get()
+  findAll() {
+    return this.loanService.findAll();
   }
 
 }

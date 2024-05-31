@@ -77,6 +77,9 @@ export class Loan {
     referenceTwoLastName?: string
 
     @Prop({type:String})
+    comments?: string
+
+    @Prop({type:String})
     referenceTwoPhone?: string
 
     @Prop({type:Number})
