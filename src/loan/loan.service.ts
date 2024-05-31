@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -26,6 +26,9 @@ export class LoanService {
 
   async create(createLoanDto: CreateLoanDto) {
     try{
+
+      
+
       return await this.loanModel.create(createLoanDto)
     }
     catch(err){
@@ -121,38 +124,39 @@ export class LoanService {
     try {
 
       const numberOfUnPaidApprovedLoan = await this.loanModel.countDocuments({
-        "user._id": new mongoose.Schema.Types.ObjectId('userId'),
+        user: userId,
         status: LoanStatus.APPROVED,
         loanPaidStatus: PaidStatus.UNPAID,
       });
-      if(numberOfUnPaidApprovedLoan>0){
-        throw new NotAcceptableException('Your previous loans must be in PAID status to qualify for next loan')
-      }
-      const numberOfRejectedLoan = await this.loanModel.countDocuments({"user._id":new mongoose.Schema.Types.ObjectId(userId),status:LoanStatus.REJECTED})
 
-      if(numberOfRejectedLoan>=5){
+      // if(numberOfUnPaidApprovedLoan>0){
+      //   throw new NotAcceptableException('Your previous loans must be in PAID status to qualify for next loan')
+      // }
+      const numberOfRejectedLoan = await this.loanModel.countDocuments({user:userId,status:LoanStatus.REJECTED})
+
+      if(numberOfRejectedLoan>=5 || numberOfUnPaidApprovedLoan>0){
         maxLoanAmount = 400
       }
       else{
         const numberOfApprovedLoan = await this.loanModel.countDocuments({
-          "user._id": new mongoose.Schema.Types.ObjectId(userId),
+          user: userId,
           status: LoanStatus.APPROVED,
         });
       
         if (numberOfApprovedLoan == 0) {
           maxLoanAmount= 400;
-        } else if (numberOfApprovedLoan>1 && numberOfApprovedLoan<4){
+        } else if (numberOfApprovedLoan>0 && numberOfApprovedLoan<3){
           maxLoanAmount=800
-        } else if (numberOfApprovedLoan>3 && numberOfApprovedLoan<9){
+        } else if (numberOfApprovedLoan>2 && numberOfApprovedLoan<10){
           maxLoanAmount=1000
         }
-        else if(numberOfApprovedLoan>8 && numberOfApprovedLoan<12){
+        else if(numberOfApprovedLoan>9){
           maxLoanAmount= 2000
         }
 
       }
     } catch (err) {
-      throw err;
+      throw new InternalServerErrorException(err.message);
     }
 
     return maxLoanAmount
