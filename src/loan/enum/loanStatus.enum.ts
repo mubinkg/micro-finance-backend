@@ -1,5 +1,5 @@
 export enum LoanStatus{
-    APPROVED="approved",
+    APPROVED="approve",
     PENDING="pending",
-    REJECTED="rejected"
+    REJECTED="reject"
 }
