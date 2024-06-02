@@ -22,6 +22,6 @@ import { LoanLateFeeService } from './services/loan-late-fee.service';
   ],
   controllers: [LoanController],
   providers: [LoanService, LoanPaymentService, LoanLateFeeService],
-  exports: [LoanPaymentService, LoanLateFeeService]
+  exports: [LoanPaymentService, LoanLateFeeService, LoanService]
 })
 export class LoanModule {}

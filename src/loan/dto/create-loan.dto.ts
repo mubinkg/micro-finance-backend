@@ -110,4 +110,8 @@ export class CreateLoanDto {
     amoundRequestedDate?: string
     
     user?: string
+
+    isIntersetPays?: boolean
+    status?: string
+    interestPays?:number
 }

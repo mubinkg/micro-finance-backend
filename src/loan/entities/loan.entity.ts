@@ -91,6 +91,9 @@ export class Loan {
     @Prop({type:Number, default: 0})
     interestPays?: number
 
+    @Prop({type:Boolean, default:false})
+    isIntersetPays: boolean
+
     @Prop({type:String})
     paymentMethod?: string
 

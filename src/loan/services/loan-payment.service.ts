@@ -11,7 +11,8 @@ export class LoanPaymentService{
 
     async getLoan(id:string){
         try{
-            return await this.loanModel.findById(id)
+            const loan = await this.loanModel.findById(id)
+            return loan
         }
         catch(err){
             throw err;

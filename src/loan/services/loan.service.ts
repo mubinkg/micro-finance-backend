@@ -26,9 +26,6 @@ export class LoanService {
 
   async create(createLoanDto: CreateLoanDto) {
     try{
-
-      
-
       return await this.loanModel.create(createLoanDto)
     }
     catch(err){
