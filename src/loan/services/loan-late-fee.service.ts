@@ -17,7 +17,7 @@ export class LoanLateFeeService{
         const lateDays = totalDays - 14
 
         if(lateDays<= 0) return {
-            totalInterest: 0,
+            totalInterest: loanDetails.amountDue - loanDetails.amountRequested,
             totalLateFee: 0
         }
         const interestPays = loanDetails?.interestPays || 0
