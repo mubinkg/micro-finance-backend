@@ -37,7 +37,22 @@ export class PaymentsService {
         delete loanDetails._id
         loanDetails.isIntersetPays = true
         loanDetails.interestPays = loanDetails.interestPays + createPaymentDto.amount
-        
+
+        let today = new Date();
+        let dd = String(today.getDate()).padStart(2, '0');
+        let mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        let yyyy = today.getFullYear();
+
+        const amoundRequestedDate = `${mm}/${dd}/${yyyy}`;
+
+        const fourteenDaysInMilliseconds = 14 * 24 * 60 * 60 * 1000;
+        today = new Date(today.getTime() + fourteenDaysInMilliseconds);
+        dd = String(today.getDate()).padStart(2, '0');
+        mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        yyyy = today.getFullYear();
+
+        const amountDueDate = `${mm}/${dd}/${yyyy}`;
+
         const newLoanData = {
           checkFront: loanDetails.checkFront,
           driverLicenseImage: loanDetails.driverLicenseImage,
@@ -65,8 +80,8 @@ export class PaymentsService {
           paymentMethod: loanDetails.paymentMethod,
           paymentDetails: loanDetails.paymentDetails,
           signature: loanDetails.signature,
-          amountDueDate: loanDetails.amountDueDate,
-          amoundRequestedDate: loanDetails.amoundRequestedDate,
+          amountDueDate: amountDueDate,
+          amoundRequestedDate: amoundRequestedDate,
           user: loanDetails.user._id,
           isIntersetPays: false,
           status: LoanStatus.PROCESSING,
@@ -74,12 +89,12 @@ export class PaymentsService {
         }
 
         await this.loanService.create(newLoanData)
-        await this.loanService.update(createPaymentDto.loanId, {isIntersetPays: true})
+        await this.loanService.update(createPaymentDto.loanId, { isIntersetPays: true })
         return await this.paymentModel.create(historyData)
 
       }
 
-      if(createPaymentDto.amount !== totalAmount+totalInterest+totalLateFee){
+      if (createPaymentDto.amount !== totalAmount + totalInterest + totalLateFee) {
         throw new NotAcceptableException('Amount not matched')
       }
       const historyData = {
@@ -88,7 +103,7 @@ export class PaymentsService {
         paidAmount: createPaymentDto.amount,
         unpaidAmount: 0
       }
-      await this.loanService.update(createPaymentDto.loanId, {status: 'paid'})
+      await this.loanService.update(createPaymentDto.loanId, { status: 'paid' })
       return await this.paymentModel.create(historyData)
     }
     catch (err) {
