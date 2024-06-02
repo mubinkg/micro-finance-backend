@@ -78,8 +78,18 @@ export class PaymentsService {
         return await this.paymentModel.create(historyData)
 
       }
-      // return await this.paymentModel.create(createPaymentDto)
-      return null
+
+      if(createPaymentDto.amount !== totalAmount+totalInterest+totalLateFee){
+        throw new NotAcceptableException('Amount not matched')
+      }
+      const historyData = {
+        user: createPaymentDto.userId,
+        loan: createPaymentDto.loanId,
+        paidAmount: createPaymentDto.amount,
+        unpaidAmount: 0
+      }
+      await this.loanService.update(createPaymentDto.loanId, {status: 'paid'})
+      return await this.paymentModel.create(historyData)
     }
     catch (err) {
       throw err;
