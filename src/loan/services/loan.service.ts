@@ -88,7 +88,7 @@ export class LoanService {
       const loans = await this.loanModel.find({user: userId}).sort('-_id')
       for(let i =0;i<loans.length;i++){
         const {totalInterest,totalLateFee}=  this.loanLateFeeService.getLateFee(loans[i])
-        loans[i]['totalDue'] = loans[i].amountDue + totalInterest + totalLateFee
+        loans[i]['totalDue'] = loans[i].amountRequested + totalInterest + totalLateFee
         loans[i]['intersetDue'] = totalInterest
       }
       return loans
