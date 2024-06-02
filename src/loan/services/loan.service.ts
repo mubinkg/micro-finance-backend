@@ -6,6 +6,7 @@ import { LoanDocument, Loan } from '../entities/loan.entity';
 import mongoose, { Model } from 'mongoose';
 import { LoanStatus } from '../enum/loanStatus.enum';
 import { PaidStatus } from '../enum/paidStatus.enum';
+import { LoanLateFeeService } from './loan-late-fee.service';
 const AWS = require('aws-sdk');
 const fs = require('fs');
 
@@ -14,7 +15,8 @@ const fs = require('fs');
 export class LoanService {
   s3 = null
   constructor(
-    @InjectModel(Loan.name) private readonly loanModel:Model<LoanDocument>
+    @InjectModel(Loan.name) private readonly loanModel:Model<LoanDocument>,
+    private readonly loanLateFeeService:LoanLateFeeService
   ){
     AWS.config.update({
       accessKeyId: 'AKIA6ODU6YMG3NX32WE2',
@@ -35,9 +37,13 @@ export class LoanService {
 
   async findAll() {
     try{
+      let loans = await this.loanModel.find({}).sort('-_id')
+      for(let i =0;i<loans.length;i++){
+        console.log(loans[i])
+      }
       const data = {
         count: await this.loanModel.countDocuments({}),
-        loans: await this.loanModel.find({}).sort('-_id')
+        loans: loans
       }
       return data
     }catch(err){
@@ -79,7 +85,13 @@ export class LoanService {
 
   async getUserLoan(userId:string){
     try{
-      return await this.loanModel.find({user: userId}).sort('-_id')
+      const loans = await this.loanModel.find({user: userId}).sort('-_id')
+      for(let i =0;i<loans.length;i++){
+        const {totalInterest,totalLateFee}=  this.loanLateFeeService.getLateFee(loans[i])
+        loans[i]['totalDue'] = loans[i].amountDue + totalInterest + totalLateFee
+        loans[i]['intersetDue'] = totalInterest
+      }
+      return loans
     }catch(err){
       throw err
     }

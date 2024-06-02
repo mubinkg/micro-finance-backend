@@ -111,6 +111,12 @@ export class Loan {
 
     @Prop({type:String})
     amoundRequestedDate?: string
+
+    @Prop({type:Number})
+    intersetDue?: number
+    
+    @Prop({type:Number})
+    totalDue: number
 }
 
 
