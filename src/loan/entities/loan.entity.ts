@@ -88,6 +88,9 @@ export class Loan {
     @Prop({type:Number})
     amountDue?: number
 
+    @Prop({type:Number, default: 0})
+    interestPays?: number
+
     @Prop({type:String})
     paymentMethod?: string
 

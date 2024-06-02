@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Loan, LoanSchema } from './entities/loan.entity';
 import { UserModule } from 'src/user/user.module';
 import { LoanPaymentService } from './services/loan-payment.service';
+import { LoanLateFeeService } from './services/loan-late-fee.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { LoanPaymentService } from './services/loan-payment.service';
     UserModule
   ],
   controllers: [LoanController],
-  providers: [LoanService, LoanPaymentService],
-  exports: [LoanPaymentService]
+  providers: [LoanService, LoanPaymentService, LoanLateFeeService],
+  exports: [LoanPaymentService, LoanLateFeeService]
 })
 export class LoanModule {}

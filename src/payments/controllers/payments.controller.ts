@@ -23,7 +23,7 @@ export class PaymentsController {
       const userId = user.userId
       createPaymentDto['userId'] = userId
       const loanDetails = await this.loanPaymentService.getLoan(createPaymentDto.loanId)
-      return this.paymentsService.create(createPaymentDto);
+      return this.paymentsService.create(createPaymentDto, loanDetails);
     } catch (err) {
       throw err
     }
