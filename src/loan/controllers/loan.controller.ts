@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, UnauthorizedException, NotAcceptableException, Put } from '@nestjs/common';
-import { LoanService } from './loan.service';
-import { CreateLoanDto } from './dto/create-loan.dto';
-import { UpdateLoanDto } from './dto/update-loan.dto';
+import { LoanService } from '../services/loan.service';
+import { CreateLoanDto } from '../dto/create-loan.dto';
+import { UpdateLoanDto } from '../dto/update-loan.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/decorators/currentuser.decorator';
-import { UpdateLoanDetailsDto } from './dto/update-loan-details';
+import { UpdateLoanDetailsDto } from '../dto/update-loan-details';
 import { JwtAuthGuard } from 'src/user/jwt/jwt.guard';
 import { UserLoanServie } from 'src/user/services/user-loan.service';
 

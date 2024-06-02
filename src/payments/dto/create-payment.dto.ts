@@ -11,11 +11,9 @@ export class CreatePaymentDto {
     @IsNotEmpty()
     amount:number
 
-    @IsNumber()
-    @IsNotEmpty()
-    lateFee:number
-
     @IsEnum(PaymentEnum)
     @IsNotEmpty()
     paymentType: PaymentEnum
+
+    userId: string
 }

@@ -3,6 +3,7 @@ import { PaymentsService } from './service/payments.service';
 import { PaymentsController } from './controllers/payments.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Payment, PaymentSchema } from './entities/payment.entity';
+import { LoanModule } from 'src/loan/loan.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { Payment, PaymentSchema } from './entities/payment.entity';
         schema: PaymentSchema,
         name: Payment.name
       }
-    ])
+    ]),
+    LoanModule
   ],
   controllers: [PaymentsController],
   providers: [PaymentsService],

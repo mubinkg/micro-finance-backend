@@ -108,5 +108,5 @@ export class Loan {
 }
 
 
-export type LoadDocument = HydratedDocument<Loan>
+export type LoanDocument = HydratedDocument<Loan>
 export const LoanSchema = SchemaFactory.createForClass(Loan)

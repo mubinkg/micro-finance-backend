@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { LoanService } from './loan.service';
-import { LoanController } from './loan.controller';
+import { LoanService } from './services/loan.service';
+import { LoanController } from './controllers/loan.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import * as path from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Loan, LoanSchema } from './entities/loan.entity';
 import { UserModule } from 'src/user/user.module';
+import { LoanPaymentService } from './services/loan-payment.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserModule } from 'src/user/user.module';
     UserModule
   ],
   controllers: [LoanController],
-  providers: [LoanService],
+  providers: [LoanService, LoanPaymentService],
+  exports: [LoanPaymentService]
 })
 export class LoanModule {}

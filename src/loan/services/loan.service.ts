@@ -1,11 +1,11 @@
 import { Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
-import { CreateLoanDto } from './dto/create-loan.dto';
-import { UpdateLoanDto } from './dto/update-loan.dto';
+import { CreateLoanDto } from '../dto/create-loan.dto';
+import { UpdateLoanDto } from '../dto/update-loan.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { LoadDocument, Loan } from './entities/loan.entity';
+import { LoanDocument, Loan } from '../entities/loan.entity';
 import mongoose, { Model } from 'mongoose';
-import { LoanStatus } from './enum/loanStatus.enum';
-import { PaidStatus } from './enum/paidStatus.enum';
+import { LoanStatus } from '../enum/loanStatus.enum';
+import { PaidStatus } from '../enum/paidStatus.enum';
 const AWS = require('aws-sdk');
 const fs = require('fs');
 
@@ -14,7 +14,7 @@ const fs = require('fs');
 export class LoanService {
   s3 = null
   constructor(
-    @InjectModel(Loan.name) private readonly loanModel:Model<LoadDocument>
+    @InjectModel(Loan.name) private readonly loanModel:Model<LoanDocument>
   ){
     AWS.config.update({
       accessKeyId: 'AKIA6ODU6YMG3NX32WE2',
