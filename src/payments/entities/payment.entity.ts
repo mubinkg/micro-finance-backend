@@ -1,5 +1,5 @@
-import { Prop, Schema } from "@nestjs/mongoose";
-import mongoose from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 import { Loan } from "src/loan/entities/loan.entity";
 import { User } from "src/user/entities/user.entity";
 
@@ -24,3 +24,6 @@ export class Payment {
     createdAt: Date
     updatedAt: Date
 }
+
+export const PaymentSchema = SchemaFactory.createForClass(Payment)
+export type PaymentDocument = HydratedDocument<Payment>
