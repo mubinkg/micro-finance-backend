@@ -10,4 +10,8 @@ export class UpdateLoanDto {
     comments?:string
 
     isIntersetPays?: boolean
+    isLoanPays?: boolean
+    previousLateFee?:number
+    paidlLateFee?:number
+    paidInterset?:number
 }
