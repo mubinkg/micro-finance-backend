@@ -1,21 +1,24 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
 import { UpdatePaymentDto } from '../dto/update-payment.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payment, PaymentDocument } from '../entities/payment.entity';
 import { Model } from 'mongoose';
-import { Loan } from 'src/loan/entities/loan.entity';
+import { Loan, LoanDocument } from 'src/loan/entities/loan.entity';
 import { PaymentEnum } from '../enum/payment.enum';
 import { LoanLateFeeService } from 'src/loan/services/loan-late-fee.service';
 import { LoanService } from 'src/loan/services/loan.service';
 import { LoanStatus } from 'src/loan/enum/loanStatus.enum';
+import { LoanType } from 'src/loan/enum/loanType.enum';
 
 @Injectable()
 export class PaymentsService {
   constructor(
     @InjectModel(Payment.name) private readonly paymentModel: Model<PaymentDocument>,
+    
     private readonly loanLateFeeServie: LoanLateFeeService,
-    private readonly loanService: LoanService
+    private readonly loanService: LoanService,
+    @InjectModel(Loan.name) private readonly loanModel: Model<LoanDocument>,
   ) { }
   async create(createPaymentDto: CreatePaymentDto, loanDetails: Loan): Promise<Payment> {
     try {
@@ -30,6 +33,10 @@ export class PaymentsService {
         if (totalInterest+totalLateFee !== createPaymentDto.amount) {
           throw new NotAcceptableException('Invalid interest amount. Your interset amount is ' + totalInterest)
         }
+
+        const numberofSubLoan = await this.loanModel.countDocuments({loanType:LoanType.SUB_LOAN,mainLoan:loanDetails._id})
+
+        const subLoanNumber = `${loanDetails.loanNumber}-${numberofSubLoan+1}`
 
         const historyData = {
           user: createPaymentDto.userId,
@@ -59,6 +66,8 @@ export class PaymentsService {
 
         const newLoanData = {
           checkFront: loanDetails.checkFront,
+          loanNumber:subLoanNumber,
+          mainLoan:loanDetails._id,
           driverLicenseImage: loanDetails.driverLicenseImage,
           paystubs: loanDetails.paystubs,
           firstName: loanDetails.firstName,
@@ -87,6 +96,7 @@ export class PaymentsService {
           amountDueDate: amountDueDate,
           amoundRequestedDate: amoundRequestedDate,
           user: loanDetails.user._id,
+          loanType:LoanType.SUB_LOAN,
           isIntersetPays: false,
           status: LoanStatus.PENDING,
           interestPays: createPaymentDto.amount
@@ -116,15 +126,43 @@ export class PaymentsService {
 
   async findPaymentHistory() {
 
-    const paymentHistory = await this.paymentModel.aggregate([{
-      $match:{
-        _id:{$ne:null}
-      }
-    }])
+    let paymentHistory,totalCount=0
 
-    console.log(paymentHistory)
+    try {
+      paymentHistory = await this.paymentModel.aggregate([
+        {
+          $lookup:{
+            from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user"}
+        },
+        {
+          $unwind:"$user"
+        },
+        {
+          $lookup:{
+            from: "loans",
+          localField: "loan",
+          foreignField: "_id",
+          as: "loan"}
+        },
+        {
+          $unwind:"$loan"
+        },
+      ])
+  
+      totalCount = await this.paymentModel.countDocuments({})
+      
+    } catch (error) {
+      throw new InternalServerErrorException("Failed to find payment history. ")
+    }
 
-    return paymentHistory;
+    
+    return {
+      history: paymentHistory,
+      count:totalCount
+    };
   }
 
   findOne(id: number) {

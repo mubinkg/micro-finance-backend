@@ -8,6 +8,8 @@ export class CreateLoanDto {
 
     paystubs?: string
 
+    loanNumber?:String 
+
     @IsString()
     @IsNotEmpty()
     firstName?: string
@@ -114,4 +116,5 @@ export class CreateLoanDto {
     isIntersetPays?: boolean
     status?: string
     interestPays?:number
+    loanType?:string
 }

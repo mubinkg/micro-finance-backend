@@ -29,8 +29,8 @@ export class PaymentsController {
     }
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get('/findPaymentHistory')
-  @UseGuards(JwtAuthGuard)
   async findPaymentHistory() {
     return await this.paymentsService.findPaymentHistory();
   }

@@ -3,6 +3,7 @@ import mongoose, { HydratedDocument } from "mongoose";
 import { User } from "src/user/entities/user.entity";
 import { PaidStatus } from "../enum/paidStatus.enum";
 import { LoanStatus } from "../enum/loanStatus.enum";
+import { LoanType } from "../enum/loanType.enum";
 
 @Schema({
     timestamps: true
@@ -13,11 +14,17 @@ export class Loan {
     @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
     user?: User
 
+    @Prop({type:mongoose.Schema.Types.ObjectId, ref:'Loan'})
+    mainLoan?:Loan
+
     @Prop({type:String})
     firstName?: string
 
     @Prop({type:String})
     lastName?: string
+
+    @Prop({type:String})
+    loanNumber?:string
 
     @Prop({type:String})
     currentAddress?: string
@@ -126,6 +133,9 @@ export class Loan {
 
     @Prop({type:Number})
     lateFee: number
+
+    @Prop({type:String,enum:LoanType,default:LoanType.MAIN_LOAN})
+    loanType:string
 
     @Prop({type:Number, default: 0})
     paidInterset: number
