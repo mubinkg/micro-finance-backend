@@ -126,10 +126,10 @@ export class PaymentsService {
 
   async findPaymentHistory() {
 
-    let paymentHistory,totalCount=0
+    let history,count=0
 
     try {
-      paymentHistory = await this.paymentModel.aggregate([
+      history = await this.paymentModel.aggregate([
         {
           $lookup:{
             from: "users",
@@ -152,7 +152,7 @@ export class PaymentsService {
         },
       ])
   
-      totalCount = await this.paymentModel.countDocuments({})
+      count = await this.paymentModel.countDocuments({})
       
     } catch (error) {
       throw new InternalServerErrorException("Failed to find payment history. ")
@@ -160,8 +160,7 @@ export class PaymentsService {
 
     
     return {
-      history: paymentHistory,
-      count:totalCount
+      history,count
     };
   }
 
