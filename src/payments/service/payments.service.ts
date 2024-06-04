@@ -153,15 +153,14 @@ export class PaymentsService {
       ])
   
       count = await this.paymentModel.countDocuments({})
+
+      return {
+        history,count
+      };
       
     } catch (error) {
       throw new InternalServerErrorException("Failed to find payment history. ")
     }
-
-    
-    return {
-      history,count
-    };
   }
 
   findOne(id: number) {
