@@ -7,6 +7,7 @@ import mongoose, { Model } from 'mongoose';
 import { LoanStatus } from '../enum/loanStatus.enum';
 import { PaidStatus } from '../enum/paidStatus.enum';
 import { LoanLateFeeService } from './loan-late-fee.service';
+import { LoanType } from '../enum/loanType.enum';
 const AWS = require('aws-sdk');
 const fs = require('fs');
 
@@ -15,9 +16,9 @@ const fs = require('fs');
 export class LoanService {
   s3 = null
   constructor(
-    @InjectModel(Loan.name) private readonly loanModel:Model<LoanDocument>,
-    private readonly loanLateFeeService:LoanLateFeeService
-  ){
+    @InjectModel(Loan.name) private readonly loanModel: Model<LoanDocument>,
+    private readonly loanLateFeeService: LoanLateFeeService
+  ) {
     AWS.config.update({
       accessKeyId: 'AKIA6ODU6YMG3NX32WE2',
       secretAccessKey: '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',
@@ -27,18 +28,25 @@ export class LoanService {
   }
 
   async create(createLoanDto: CreateLoanDto) {
-    try{
+    try {
+
+      const loanCount = await this.loanModel.countDocuments({loanType:LoanType.MAIN_LOAN})
+
+      if (!createLoanDto.loanType) {
+        createLoanDto.loanNumber = `${loanCount + 1 + 100}`
+      }
+
       return await this.loanModel.create(createLoanDto)
     }
-    catch(err){
+    catch (err) {
       throw err;
     }
   }
 
   async findAll() {
-    try{
+    try {
       let loans = await this.loanModel.find({}).sort('-_id')
-      for(let i =0;i<loans.length;i++){
+      for (let i = 0; i < loans.length; i++) {
         console.log(loans[i])
       }
       const data = {
@@ -46,44 +54,44 @@ export class LoanService {
         loans: loans
       }
       return data
-    }catch(err){
+    } catch (err) {
       throw err;
     }
   }
 
   async findOne(id: string) {
-    try{
-      if(!id){
+    try {
+      if (!id) {
         throw new NotAcceptableException('Give Valid Id')
       }
       return await this.loanModel.findById(id)
     }
-    catch(err){
+    catch (err) {
       throw err;
     }
   }
 
   async update(id: string, updateLoanDto: UpdateLoanDto) {
-    try{
+    try {
       const updatedData = {
         status: updateLoanDto.status
       }
-      if(updateLoanDto?.comments){
+      if (updateLoanDto?.comments) {
         updatedData['comments'] = updateLoanDto.comments
       }
-      await this.loanModel.findByIdAndUpdate(id,updatedData)
+      await this.loanModel.findByIdAndUpdate(id, updatedData)
       return await this.loanModel.findById(id)
     }
-    catch(err){
+    catch (err) {
       throw err;
     }
   }
 
-  async updateLoanData(id: string, updateLoanDto: UpdateLoanDto){
-    try{
+  async updateLoanData(id: string, updateLoanDto: UpdateLoanDto) {
+    try {
       return await this.loanModel.findByIdAndUpdate(id, updateLoanDto)
     }
-    catch(err){
+    catch (err) {
       throw err;
     }
   }
@@ -92,33 +100,33 @@ export class LoanService {
     return `This action removes a #${id} loan`;
   }
 
-  async getUserLoan(userId:string){
-    try{
-      const loans = await this.loanModel.find({user: userId}).sort('-_id')
-      for(let i =0;i<loans.length;i++){
-        const {totalInterest,totalLateFee}=  this.loanLateFeeService.getLateFee(loans[i])
+  async getUserLoan(userId: string) {
+    try {
+      const loans = await this.loanModel.find({ user: userId }).sort('-_id')
+      for (let i = 0; i < loans.length; i++) {
+        const { totalInterest, totalLateFee } = this.loanLateFeeService.getLateFee(loans[i])
         loans[i]['totalDue'] = loans[i].amountRequested + totalInterest + totalLateFee
         loans[i]['intersetDue'] = totalInterest
         loans[i]['lateFee'] = totalLateFee
       }
       return loans
-    }catch(err){
+    } catch (err) {
       throw err
     }
   }
 
 
-  async updateLoanDetails(id:string, data:any){
-    try{
-      await this.loanModel.findByIdAndUpdate(id, {...data, status:'pending'})
+  async updateLoanDetails(id: string, data: any) {
+    try {
+      await this.loanModel.findByIdAndUpdate(id, { ...data, status: 'pending' })
       return true
     }
-    catch(err){
+    catch (err) {
       throw err;
     }
   }
 
-  async uploadImage(imageStream:any, objectKey:any){
+  async uploadImage(imageStream: any, objectKey: any) {
     const params = {
       Bucket: "zimbacash-bucket",
       Key: objectKey,
@@ -138,8 +146,8 @@ export class LoanService {
   }
 
   async getTotalApprovedLoan(userId: string) {
-      
-    let maxLoanAmount=400
+
+    let maxLoanAmount = 400
     try {
 
       const numberOfUnPaidApprovedLoan = await this.loanModel.countDocuments({
@@ -151,26 +159,26 @@ export class LoanService {
       // if(numberOfUnPaidApprovedLoan>0){
       //   throw new NotAcceptableException('Your previous loans must be in PAID status to qualify for next loan')
       // }
-      const numberOfRejectedLoan = await this.loanModel.countDocuments({user:userId,status:LoanStatus.REJECTED})
+      const numberOfRejectedLoan = await this.loanModel.countDocuments({ user: userId, status: LoanStatus.REJECTED })
 
-      if(numberOfRejectedLoan>=5 || numberOfUnPaidApprovedLoan>0){
+      if (numberOfRejectedLoan >= 5 || numberOfUnPaidApprovedLoan > 0) {
         maxLoanAmount = 400
       }
-      else{
+      else {
         const numberOfApprovedLoan = await this.loanModel.countDocuments({
           user: userId,
           status: LoanStatus.APPROVED,
         });
-      
+
         if (numberOfApprovedLoan == 0) {
-          maxLoanAmount= 400;
-        } else if (numberOfApprovedLoan>0 && numberOfApprovedLoan<3){
-          maxLoanAmount=800
-        } else if (numberOfApprovedLoan>2 && numberOfApprovedLoan<10){
-          maxLoanAmount=1000
+          maxLoanAmount = 400;
+        } else if (numberOfApprovedLoan > 0 && numberOfApprovedLoan < 3) {
+          maxLoanAmount = 800
+        } else if (numberOfApprovedLoan > 2 && numberOfApprovedLoan < 10) {
+          maxLoanAmount = 1000
         }
-        else if(numberOfApprovedLoan>9){
-          maxLoanAmount= 2000
+        else if (numberOfApprovedLoan > 9) {
+          maxLoanAmount = 2000
         }
 
       }
