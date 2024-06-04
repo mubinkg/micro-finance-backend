@@ -64,10 +64,12 @@ export class PaymentsService {
 
         const amountDueDate = `${mm}/${dd}/${yyyy}`;
 
+
+
         const newLoanData = {
           checkFront: loanDetails.checkFront,
           loanNumber:subLoanNumber,
-          mainLoan:loanDetails._id,
+          mainLoan:loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails._id : loanDetails.mainLoan,
           driverLicenseImage: loanDetails.driverLicenseImage,
           paystubs: loanDetails.paystubs,
           firstName: loanDetails.firstName,
