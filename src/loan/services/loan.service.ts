@@ -79,6 +79,15 @@ export class LoanService {
     }
   }
 
+  async updateLoanData(id: string, updateLoanDto: UpdateLoanDto){
+    try{
+      return await this.loanModel.findByIdAndUpdate(id, updateLoanDto)
+    }
+    catch(err){
+      throw err;
+    }
+  }
+
   remove(id: number) {
     return `This action removes a #${id} loan`;
   }
@@ -90,6 +99,7 @@ export class LoanService {
         const {totalInterest,totalLateFee}=  this.loanLateFeeService.getLateFee(loans[i])
         loans[i]['totalDue'] = loans[i].amountRequested + totalInterest + totalLateFee
         loans[i]['intersetDue'] = totalInterest
+        loans[i]['lateFee'] = totalLateFee
       }
       return loans
     }catch(err){

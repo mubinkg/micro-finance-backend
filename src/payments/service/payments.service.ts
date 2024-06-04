@@ -19,11 +19,15 @@ export class PaymentsService {
   ) { }
   async create(createPaymentDto: CreatePaymentDto, loanDetails: Loan): Promise<Payment> {
     try {
-      const totalAmount = loanDetails.amountDue
+
+      if(loanDetails.status !== LoanStatus.APPROVED){
+        throw new NotAcceptableException('Can not pay this loan.')
+      }
+
       const { totalInterest, totalLateFee } = this.loanLateFeeServie.getLateFee(loanDetails)
 
       if (createPaymentDto.paymentType === PaymentEnum.INTEREST_PAY) {
-        if (totalInterest !== createPaymentDto.amount) {
+        if (totalInterest+totalLateFee !== createPaymentDto.amount) {
           throw new NotAcceptableException('Invalid interest amount. Your interset amount is ' + totalInterest)
         }
 
@@ -84,17 +88,16 @@ export class PaymentsService {
           amoundRequestedDate: amoundRequestedDate,
           user: loanDetails.user._id,
           isIntersetPays: false,
-          status: LoanStatus.PROCESSING,
+          status: LoanStatus.PENDING,
           interestPays: createPaymentDto.amount
         }
 
         await this.loanService.create(newLoanData)
-        await this.loanService.update(createPaymentDto.loanId, { isIntersetPays: true })
+        await this.loanService.updateLoanData(createPaymentDto.loanId, { isIntersetPays: true, status: LoanStatus.PROCESSING, paidlLateFee: totalLateFee, paidInterset: totalInterest})
         return await this.paymentModel.create(historyData)
-
       }
 
-      if (createPaymentDto.amount !== totalAmount + totalInterest + totalLateFee) {
+      if (createPaymentDto.amount !== loanDetails.amountRequested + totalInterest + totalLateFee) {
         throw new NotAcceptableException('Amount not matched')
       }
       const historyData = {
@@ -103,7 +106,7 @@ export class PaymentsService {
         paidAmount: createPaymentDto.amount,
         unpaidAmount: 0
       }
-      await this.loanService.update(createPaymentDto.loanId, { status: 'paid' })
+      await this.loanService.updateLoanData(createPaymentDto.loanId, { status: LoanStatus.PROCESSING , isLoanPays:true,paidlLateFee: totalLateFee, paidInterset: totalInterest})
       return await this.paymentModel.create(historyData)
     }
     catch (err) {
