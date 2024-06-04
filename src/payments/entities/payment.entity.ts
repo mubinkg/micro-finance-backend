@@ -7,22 +7,22 @@ import { User } from "src/user/entities/user.entity";
     timestamps: true
 })
 export class Payment {
-    _id: string
+    _id?: string
 
     @Prop({type:mongoose.Schema.Types.ObjectId, ref:'User'})
-    user: User
+    user?: User
 
     @Prop({type: mongoose.Schema.Types.ObjectId, ref:'Loan'})
-    loan: Loan
+    loan?: Loan
 
     @Prop({type: Number})
-    paidAmount: number
+    paidAmount?: number
 
     @Prop({type: Number})
-    unpaidAmount: number
+    unpaidAmount?: number
 
-    createdAt: Date
-    updatedAt: Date
+    createdAt?: Date
+    updatedAt?: Date
 }
 
 export const PaymentSchema = SchemaFactory.createForClass(Payment)

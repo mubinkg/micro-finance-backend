@@ -111,8 +111,17 @@ export class PaymentsService {
     }
   }
 
-  findAll() {
-    return `This action returns all payments`;
+  async findPaymentHistory() {
+
+    const paymentHistory = await this.paymentModel.aggregate([{
+      $match:{
+        _id:{$ne:null}
+      }
+    }])
+
+    console.log(paymentHistory)
+
+    return paymentHistory;
   }
 
   findOne(id: number) {

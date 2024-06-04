@@ -29,9 +29,10 @@ export class PaymentsController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.paymentsService.findAll();
+  @Get('/findPaymentHistory')
+  @UseGuards(JwtAuthGuard)
+  async findPaymentHistory() {
+    return await this.paymentsService.findPaymentHistory();
   }
 
   @Get(':id')
