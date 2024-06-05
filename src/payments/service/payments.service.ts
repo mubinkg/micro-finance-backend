@@ -135,24 +135,20 @@ console.log("dsfsdfsdf",loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails.
       history = await this.paymentModel.aggregate([
         {
           $lookup:{
-            from: "users",
-          localField: "user",
-          foreignField: "_id",
-          as: "user"}
-        },
-        {
-          $unwind:"$user"
-        },
-        {
-          $lookup:{
             from: "loans",
           localField: "loan",
           foreignField: "_id",
-          as: "loan"}
+          as: "loan"
+        }
         },
         {
           $unwind:"$loan"
         },
+        {
+          $sort:{
+            _id:-1
+          }
+        }
       ])
   
       count = await this.paymentModel.countDocuments({})
