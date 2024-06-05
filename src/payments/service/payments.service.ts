@@ -34,9 +34,10 @@ export class PaymentsService {
           throw new NotAcceptableException('Invalid interest amount. Your interset amount is ' + totalInterest)
         }
 
-        const numberofSubLoan = await this.loanModel.countDocuments({loanType:LoanType.SUB_LOAN,mainLoan:loanDetails._id})
+        const numberofSubLoan = await this.loanModel.countDocuments({loanType:"Sub Loan",mainLoan:loanDetails.mainLoan})
 
-        const subLoanNumber = `${loanDetails.loanNumber}-${numberofSubLoan+1}`
+        const subLoanNumber = `${loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails.loanNumber : loanDetails.mainLoan.loanNumber}-${numberofSubLoan+1}`
+        console.log(loanDetails.loanNumber)
 
         const historyData = {
           user: createPaymentDto.userId,
@@ -65,7 +66,7 @@ export class PaymentsService {
         const amountDueDate = `${mm}/${dd}/${yyyy}`;
 
 
-
+console.log("dsfsdfsdf",loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails._id : loanDetails.mainLoan)
         const newLoanData = {
           checkFront: loanDetails.checkFront,
           loanNumber:subLoanNumber,

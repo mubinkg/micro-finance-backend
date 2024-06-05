@@ -167,6 +167,7 @@ export class LoanService {
       else {
         const numberOfApprovedLoan = await this.loanModel.countDocuments({
           user: userId,
+          loanType:'Main Loan',
           status: LoanStatus.APPROVED,
         });
 
