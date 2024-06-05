@@ -11,7 +11,7 @@ export class LoanPaymentService{
 
     async getLoan(id:string){
         try{
-            const loan = await this.loanModel.findById(id)
+            const loan = await this.loanModel.findById(id).populate({path:"mainLoan",model:'Loan'})
             return loan
         }
         catch(err){
