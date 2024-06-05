@@ -152,9 +152,10 @@ export class LoanService {
 
       const numberOfUnPaidApprovedLoan = await this.loanModel.countDocuments({
         user: userId,
-        status: LoanStatus.APPROVED,
-        loanPaidStatus: PaidStatus.UNPAID,
+        status: {$in:[LoanStatus.APPROVED,LoanStatus.PROCESSING]},
       });
+
+      console.log(numberOfUnPaidApprovedLoan)
 
       // if(numberOfUnPaidApprovedLoan>0){
       //   throw new NotAcceptableException('Your previous loans must be in PAID status to qualify for next loan')
@@ -165,20 +166,20 @@ export class LoanService {
         maxLoanAmount = 400
       }
       else {
-        const numberOfApprovedLoan = await this.loanModel.countDocuments({
+        const numberOfPaidLoan = await this.loanModel.countDocuments({
           user: userId,
           loanType:'Main Loan',
-          status: LoanStatus.APPROVED,
+          status: LoanStatus.PAID,
         });
 
-        if (numberOfApprovedLoan == 0) {
+        if (numberOfPaidLoan == 0) {
           maxLoanAmount = 400;
-        } else if (numberOfApprovedLoan > 0 && numberOfApprovedLoan < 3) {
+        } else if (numberOfPaidLoan > 0 && numberOfPaidLoan < 3) {
           maxLoanAmount = 800
-        } else if (numberOfApprovedLoan > 2 && numberOfApprovedLoan < 10) {
+        } else if (numberOfPaidLoan > 2 && numberOfPaidLoan < 10) {
           maxLoanAmount = 1000
         }
-        else if (numberOfApprovedLoan > 9) {
+        else if (numberOfPaidLoan > 9) {
           maxLoanAmount = 2000
         }
 
