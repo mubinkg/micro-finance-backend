@@ -47,7 +47,8 @@ export class LoanService {
     try {
       let loans = await this.loanModel.find({}).sort('-_id')
       for (let i = 0; i < loans.length; i++) {
-        console.log(loans[i])
+        const { totalInterest, totalLateFee } = this.loanLateFeeService.getLateFee(loans[i])
+        loans[i]['lateFee'] = totalLateFee
       }
       const data = {
         count: await this.loanModel.countDocuments({}),
