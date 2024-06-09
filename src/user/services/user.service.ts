@@ -24,7 +24,6 @@ export class UserService {
     try{
       createUserDto.email = createUserDto.email.toLowerCase()
       const isExist = await this.userModel.findOne({email: createUserDto.email})
-      console.log(isExist)
       if(isExist){
         throw new NotAcceptableException('Already registered with this email.')
       }
