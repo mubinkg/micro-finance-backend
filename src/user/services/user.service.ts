@@ -67,7 +67,7 @@ export class UserService {
   async findAll() {
     try{
       return {
-        users: await this.userModel.find({}),
+        users: await this.userModel.find({}).sort('-_id'),
         count: await this.userModel.countDocuments({})
       }
     }catch(err){
