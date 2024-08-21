@@ -5,9 +5,11 @@ import { MailModule } from './mail/mail.module';
 import { LoanModule } from './loan/loan.module';
 import { UploadModule } from './upload/upload.module';
 import { PaymentsModule } from './payments/payments.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MongooseModule.forRoot('mongodb://localhost:27017/microfinanace'),
     UserModule,
     MailModule,

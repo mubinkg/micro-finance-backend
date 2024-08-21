@@ -20,8 +20,8 @@ export class LoanService {
     private readonly loanLateFeeService: LoanLateFeeService
   ) {
     AWS.config.update({
-      accessKeyId: 'AKIA6ODU6YMG3NX32WE2',
-      secretAccessKey: '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',
+      accessKeyId: process.env.S3_ACCESS,
+      secretAccessKey: process.env.S3_SECRET,
       region: 'us-east-1'
     });
     this.s3 = new AWS.S3();
