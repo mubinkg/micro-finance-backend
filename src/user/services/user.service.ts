@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +8,7 @@ import { MailService } from 'src/mail/mail.service';
 import { UserSigninDto } from '../dto/user-singin.dto';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 const generator = require('generate-password');
 
 
@@ -42,6 +43,26 @@ export class UserService {
       throw err;
     }
   }
+
+  async changePassword(createUserDto: ChangePasswordDto, user:any) {
+    try{
+      const userData = await this.userModel.findById(user.userId)
+      if(!userData){
+        throw new NotFoundException('User not found.')
+      }
+      const checkPassword = await bcrypt.compare(createUserDto.oldPassword,userData.password)
+      if(!checkPassword){
+        throw new NotAcceptableException('Password not matched')
+      }
+      const newPassword = await bcrypt.hash(createUserDto.newPassword, 10)
+      await this.userModel.findByIdAndUpdate(userData._id, {password: newPassword})
+      return 'User password updated successfully.'
+    }
+    catch(err){
+      throw err;
+    }
+  }
+  
 
   async resetPassword(email: string){
     try{

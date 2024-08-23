@@ -6,6 +6,7 @@ import { UserSigninDto } from '../dto/user-singin.dto';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../jwt/jwt.guard';
 import { User } from 'src/decorators/currentuser.decorator';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 @Controller('user')
 export class UserController {
@@ -14,6 +15,15 @@ export class UserController {
   @Post('registration')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
+  }
+
+  @Post('changePassword')
+  @UseGuards(JwtAuthGuard)
+  updatePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @User('user') user:any
+  ) {
+    return this.userService.changePassword(changePasswordDto, user);
   }
 
   @Get()
