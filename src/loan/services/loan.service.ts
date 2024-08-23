@@ -101,9 +101,13 @@ export class LoanService {
     return `This action removes a #${id} loan`;
   }
 
-  async getUserLoan(userId: string) {
+  async getUserLoan(userId: string, role:string) {
     try {
-      const loans = await this.loanModel.find({ user: userId }).sort('-_id')
+      const query = {}
+      if(role === 'admin'){
+        query['user'] = userId
+      }
+      const loans = await this.loanModel.find(query).sort('-_id')
       for (let i = 0; i < loans.length; i++) {
         const { totalInterest, totalLateFee } = this.loanLateFeeService.getLateFee(loans[i])
         loans[i]['totalDue'] = loans[i].amountRequested + totalInterest + totalLateFee

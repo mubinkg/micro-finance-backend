@@ -86,7 +86,7 @@ export class LoanController {
   getUerLoan(
     @User('user') user: any
   ) {
-    return this.loanService.getUserLoan(user.userId)
+    return this.loanService.getUserLoan(user.userId, user.role)
   }
 
   @Patch(':id')
