@@ -108,7 +108,12 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findUser(user:any) {
+    try{
+      return this.userModel.findById(user.userId)
+    }
+    catch(err){
+      throw err;
+    }
   }
 }

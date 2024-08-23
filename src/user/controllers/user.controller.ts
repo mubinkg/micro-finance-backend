@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserSigninDto } from '../dto/user-singin.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from '../jwt/jwt.guard';
+import { User } from 'src/decorators/currentuser.decorator';
 
 @Controller('user')
 export class UserController {
@@ -15,8 +17,11 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  @UseGuards(JwtAuthGuard)
+  findUser(
+    @User('user') user:any
+  ) {
+    return this.userService.findUser(user);
   }
 
   @Post('signin')
@@ -55,8 +60,8 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.userService.remove(+id);
+  // }
 }
