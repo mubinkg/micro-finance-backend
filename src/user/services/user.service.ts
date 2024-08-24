@@ -131,7 +131,16 @@ export class UserService {
 
   async findUser(user:any) {
     try{
-      return this.userModel.findById(user.userId)
+      return await this.userModel.findById(user.userId)
+    }
+    catch(err){
+      throw err;
+    }
+  }
+
+  async getUserList(){
+    try{
+      return await this.userModel.find({})
     }
     catch(err){
       throw err;

@@ -34,6 +34,13 @@ export class UserController {
     return this.userService.findUser(user);
   }
 
+  @Get('user-list')
+  @UseGuards(JwtAuthGuard)
+  findUserList(
+  ) {
+    return this.userService.getUserList();
+  }
+
   @Post('signin')
   async findOne(
     @Body() userSigninDto: UserSigninDto,
