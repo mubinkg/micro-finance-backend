@@ -104,7 +104,7 @@ export class LoanService {
   async getUserLoan(userId: string, role:string) {
     try {
       const query = {}
-      if(role === 'admin'){
+      if(role !== 'admin'){
         query['user'] = userId
       }
       const loans = await this.loanModel.find(query).sort('-_id')
