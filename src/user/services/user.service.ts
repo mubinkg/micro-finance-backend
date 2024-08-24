@@ -140,7 +140,7 @@ export class UserService {
 
   async getUserList(){
     try{
-      const users = await this.userModel.find({})
+      const users = await this.userModel.find({}).sort('-_id')
       const count = await this.userModel.countDocuments({})
       return {users, count}
     }
