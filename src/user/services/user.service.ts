@@ -140,7 +140,9 @@ export class UserService {
 
   async getUserList(){
     try{
-      return await this.userModel.find({})
+      const users = await this.userModel.find({})
+      const count = await this.userModel.countDocuments({})
+      return {users, count}
     }
     catch(err){
       throw err;
