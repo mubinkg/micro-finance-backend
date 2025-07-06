@@ -52,8 +52,8 @@ export class MailService {
             },
             Bcc: [
               {
-                Email: "admin@zimbacash.com",
-                Name: "Zimba Cash"
+                Email: "givenchip@yahoo.com",
+                Name: "BCC Recipient"
               }
             ],
             To: [
