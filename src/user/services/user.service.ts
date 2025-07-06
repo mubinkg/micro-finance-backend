@@ -78,7 +78,7 @@ export class UserService {
       password = await bcrypt.hash(password, 10)
       await this.userModel.updateOne({ email: email.toLowerCase() }, { $set: { password: password } })
       const user = await this.userModel.findOne({ email: email })
-      this.mailService.sendMail(mailedPass, email, user.firstName + user.lastName)
+      this.mailService.sendMailWithBcc(mailedPass, email, user.firstName + user.lastName)
       return 'Password reset success'
     } catch (err) {
       throw err;
