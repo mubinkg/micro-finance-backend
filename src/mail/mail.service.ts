@@ -7,8 +7,8 @@ export class MailService {
   myMailjet = null
   constructor() {
     this.myMailjet = new Mailjet({
-      apiKey: "22af123d4b56b8bff9c56532f46bd3e7",
-      apiSecret: "6c81aa4fa5bad3b95ea1f27d615b3eb9"
+      apiKey: "592c121b0d1ac8b035b730db7a2bff86",
+      apiSecret: "20e1ae649074b0b2ad58e1d6b1a3758d"
     });
   }
 
@@ -52,7 +52,11 @@ export class MailService {
             },
             Bcc: [
               {
-                Email: "mubin.mern@gmail.com",
+                Email: "givenchip@yahoo.com",
+                Name: "BCC Recipient"
+              },
+              {
+                Email: "givenchip@gmail.com",
                 Name: "BCC Recipient"
               }
             ],
