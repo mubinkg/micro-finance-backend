@@ -52,7 +52,7 @@ export class MailService {
             },
             Bcc: [
               {
-                Email: "givenchip@yahoo.com",
+                Email: "mubin.mern@gmail.com",
                 Name: "BCC Recipient"
               }
             ],
@@ -67,10 +67,10 @@ export class MailService {
           }
         ]
       }).then((response) => {
-
+        console.log('Response after mail success : ', response);
       })
       .catch((error) => {
-
+        console.log('Error after mail failed : ', error)
       });
   }
 
