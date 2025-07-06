@@ -3,14 +3,11 @@ import { CreateLoanDto } from '../dto/create-loan.dto';
 import { UpdateLoanDto } from '../dto/update-loan.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoanDocument, Loan } from '../entities/loan.entity';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { LoanStatus } from '../enum/loanStatus.enum';
-import { PaidStatus } from '../enum/paidStatus.enum';
 import { LoanLateFeeService } from './loan-late-fee.service';
 import { LoanType } from '../enum/loanType.enum';
 const AWS = require('aws-sdk');
-const fs = require('fs');
-
 
 @Injectable()
 export class LoanService {
@@ -30,7 +27,7 @@ export class LoanService {
   async create(createLoanDto: CreateLoanDto) {
     try {
 
-      const loanCount = await this.loanModel.countDocuments({loanType:LoanType.MAIN_LOAN})
+      const loanCount = await this.loanModel.countDocuments({ loanType: LoanType.MAIN_LOAN })
 
       if (!createLoanDto.loanType) {
         createLoanDto.loanNumber = `${loanCount + 1 + 100}`
@@ -101,10 +98,10 @@ export class LoanService {
     return `This action removes a #${id} loan`;
   }
 
-  async getUserLoan(userId: string, role:string) {
+  async getUserLoan(userId: string, role: string) {
     try {
       const query = {}
-      if(role !== 'admin'){
+      if (role !== 'admin') {
         query['user'] = userId
       }
       const loans = await this.loanModel.find(query).sort('-_id')
@@ -157,14 +154,9 @@ export class LoanService {
 
       const numberOfUnPaidApprovedLoan = await this.loanModel.countDocuments({
         user: userId,
-        status: {$in:[LoanStatus.APPROVED,LoanStatus.PROCESSING]},
+        status: { $in: [LoanStatus.APPROVED, LoanStatus.PROCESSING] },
       });
 
-      console.log(numberOfUnPaidApprovedLoan)
-
-      // if(numberOfUnPaidApprovedLoan>0){
-      //   throw new NotAcceptableException('Your previous loans must be in PAID status to qualify for next loan')
-      // }
       const numberOfRejectedLoan = await this.loanModel.countDocuments({ user: userId, status: LoanStatus.REJECTED })
 
       if (numberOfRejectedLoan >= 5 || numberOfUnPaidApprovedLoan > 0) {
@@ -173,7 +165,7 @@ export class LoanService {
       else {
         const numberOfPaidLoan = await this.loanModel.countDocuments({
           user: userId,
-          loanType:'Main Loan',
+          loanType: 'Main Loan',
           status: LoanStatus.PAID,
         });
 
