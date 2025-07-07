@@ -4,14 +4,10 @@ import { MailService } from './mail.service';
 
 @Controller('mail')
 export class MailController {
-    constructor(
-        private readonly mailService:MailService
-    ){}
+  constructor(private readonly mailService: MailService) {}
 
-    @Post()
-    createMail(
-        @Body()createMailInput:CreateMail
-    ){
-        return this.mailService.sendMailFromUser(createMailInput)
-    }
+  @Post()
+  createMail(@Body() createMailInput: CreateMail) {
+    return this.mailService.sendMailFromUser(createMailInput);
+  }
 }

@@ -1,4 +1,4 @@
-export enum PaymentEnum{
-    INTEREST_PAY = 'interestPay',
-    LOAN_PAY = 'loanPay'
+export enum PaymentEnum {
+  INTEREST_PAY = 'interestPay',
+  LOAN_PAY = 'loanPay',
 }
