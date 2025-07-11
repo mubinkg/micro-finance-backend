@@ -11,7 +11,6 @@ async function bootstrap() {
     origin: '*',
   });
   app.use(morgan(':date[clf] ":method :url"'));
-  await app.listen(3001);
-  console.log(`App started at http://localhost:3001`);
+  await app.listen(3000);
 }
 bootstrap();
