@@ -7,8 +7,8 @@ export class MailService {
   myMailjet = null;
   constructor() {
     this.myMailjet = new Mailjet({
-      apiKey: '592c121b0d1ac8b035b730db7a2bff86',
-      apiSecret: '20e1ae649074b0b2ad58e1d6b1a3758d',
+      apiKey: process.env.MILJET_API_KEY,
+      apiSecret: process.env.MAILJET_API_SECRET,
     });
   }
 
@@ -101,8 +101,8 @@ export class MailService {
           },
         ],
       })
-      .then((response) => {})
-      .catch((error) => {});
+      .then((response) => { })
+      .catch((error) => { });
 
     return 'Mail sent';
   }
