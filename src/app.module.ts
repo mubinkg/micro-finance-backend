@@ -10,7 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot('mongodb://localhost:27017/microfinanace'),
+    MongooseModule.forRoot(process.env.DB_URL),
     UserModule,
     MailModule,
     LoanModule,
@@ -18,4 +18,4 @@ import { ConfigModule } from '@nestjs/config';
     PaymentsModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }
