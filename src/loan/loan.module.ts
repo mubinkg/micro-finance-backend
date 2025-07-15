@@ -15,13 +15,13 @@ import { LoanLateFeeService } from './services/loan-late-fee.service';
     MongooseModule.forFeature([
       {
         schema: LoanSchema,
-        name: Loan.name
-      }
+        name: Loan.name,
+      },
     ]),
-    UserModule
+    UserModule,
   ],
   controllers: [LoanController],
   providers: [LoanService, LoanPaymentService, LoanLateFeeService],
-  exports: [LoanPaymentService, LoanLateFeeService, LoanService]
+  exports: [LoanPaymentService, LoanLateFeeService, LoanService],
 })
 export class LoanModule {}

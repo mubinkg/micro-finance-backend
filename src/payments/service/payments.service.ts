@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
 import { UpdatePaymentDto } from '../dto/update-payment.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,41 +18,51 @@ import { LoanType } from 'src/loan/enum/loanType.enum';
 @Injectable()
 export class PaymentsService {
   constructor(
-    @InjectModel(Payment.name) private readonly paymentModel: Model<PaymentDocument>,
-    
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<PaymentDocument>,
+
     private readonly loanLateFeeServie: LoanLateFeeService,
     private readonly loanService: LoanService,
     @InjectModel(Loan.name) private readonly loanModel: Model<LoanDocument>,
-  ) { }
-  async create(createPaymentDto: CreatePaymentDto, loanDetails: Loan): Promise<Payment> {
+  ) {}
+  async create(
+    createPaymentDto: CreatePaymentDto,
+    loanDetails: Loan,
+  ): Promise<Payment> {
     try {
-
-      if(loanDetails.status !== LoanStatus.APPROVED){
-        throw new NotAcceptableException('Can not pay this loan.')
+      if (loanDetails.status !== LoanStatus.APPROVED) {
+        throw new NotAcceptableException('Can not pay this loan.');
       }
 
-      const { totalInterest, totalLateFee } = this.loanLateFeeServie.getLateFee(loanDetails)
+      const { totalInterest, totalLateFee } =
+        this.loanLateFeeServie.getLateFee(loanDetails);
 
       if (createPaymentDto.paymentType === PaymentEnum.INTEREST_PAY) {
-        if (totalInterest+totalLateFee !== createPaymentDto.amount) {
-          throw new NotAcceptableException('Invalid interest amount. Your interset amount is ' + totalInterest)
+        if (totalInterest + totalLateFee !== createPaymentDto.amount) {
+          throw new NotAcceptableException(
+            'Invalid interest amount. Your interset amount is ' + totalInterest,
+          );
         }
 
-        const numberofSubLoan = await this.loanModel.countDocuments({loanType:"Sub Loan",mainLoan:loanDetails.mainLoan})
+        const numberofSubLoan = await this.loanModel.countDocuments({
+          loanType: 'Sub Loan',
+          mainLoan: loanDetails.mainLoan,
+        });
 
-        const subLoanNumber = `${loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails.loanNumber : loanDetails.mainLoan.loanNumber}-${numberofSubLoan+1}`
-        console.log(loanDetails.loanNumber)
+        const subLoanNumber = `${loanDetails?.loanType == LoanType.MAIN_LOAN ? loanDetails.loanNumber : loanDetails.mainLoan.loanNumber}-${numberofSubLoan + 1}`;
+        console.log(loanDetails.loanNumber);
 
         const historyData = {
           user: createPaymentDto.userId,
           loan: createPaymentDto.loanId,
           paidAmount: createPaymentDto.amount,
-          unpaidAmount: loanDetails.amountDue
-        }
+          unpaidAmount: loanDetails.amountDue,
+        };
 
-        delete loanDetails._id
-        loanDetails.isIntersetPays = true
-        loanDetails.interestPays = loanDetails.interestPays + createPaymentDto.amount
+        delete loanDetails._id;
+        loanDetails.isIntersetPays = true;
+        loanDetails.interestPays =
+          loanDetails.interestPays + createPaymentDto.amount;
 
         let today = new Date();
         let dd = String(today.getDate()).padStart(2, '0');
@@ -65,12 +79,19 @@ export class PaymentsService {
 
         const amountDueDate = `${mm}/${dd}/${yyyy}`;
 
-
-console.log("dsfsdfsdf",loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails._id : loanDetails.mainLoan)
+        console.log(
+          'dsfsdfsdf',
+          loanDetails?.loanType == LoanType.MAIN_LOAN
+            ? loanDetails._id
+            : loanDetails.mainLoan,
+        );
         const newLoanData = {
           checkFront: loanDetails.checkFront,
-          loanNumber:subLoanNumber,
-          mainLoan:loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails._id : loanDetails.mainLoan,
+          loanNumber: subLoanNumber,
+          mainLoan:
+            loanDetails?.loanType == LoanType.MAIN_LOAN
+              ? loanDetails._id
+              : loanDetails.mainLoan,
           driverLicenseImage: loanDetails.driverLicenseImage,
           paystubs: loanDetails.paystubs,
           firstName: loanDetails.firstName,
@@ -99,66 +120,80 @@ console.log("dsfsdfsdf",loanDetails?.loanType==LoanType.MAIN_LOAN ? loanDetails.
           amountDueDate: amountDueDate,
           amoundRequestedDate: amoundRequestedDate,
           user: loanDetails.user._id,
-          loanType:LoanType.SUB_LOAN,
+          loanType: LoanType.SUB_LOAN,
           isIntersetPays: false,
           status: LoanStatus.PENDING,
-          interestPays: createPaymentDto.amount
-        }
+          interestPays: createPaymentDto.amount,
+        };
 
-        await this.loanService.create(newLoanData)
-        await this.loanService.updateLoanData(createPaymentDto.loanId, { isIntersetPays: true, status: LoanStatus.PROCESSING, paidlLateFee: totalLateFee, paidInterset: totalInterest})
-        return await this.paymentModel.create(historyData)
+        await this.loanService.create(newLoanData);
+        await this.loanService.updateLoanData(createPaymentDto.loanId, {
+          isIntersetPays: true,
+          status: LoanStatus.PROCESSING,
+          paidlLateFee: totalLateFee,
+          paidInterset: totalInterest,
+        });
+        return await this.paymentModel.create(historyData);
       }
 
-      if (createPaymentDto.amount !== loanDetails.amountRequested + totalInterest + totalLateFee) {
-        throw new NotAcceptableException('Amount not matched')
+      if (
+        createPaymentDto.amount !==
+        loanDetails.amountRequested + totalInterest + totalLateFee
+      ) {
+        throw new NotAcceptableException('Amount not matched');
       }
       const historyData = {
         user: createPaymentDto.userId,
         loan: createPaymentDto.loanId,
         paidAmount: createPaymentDto.amount,
-        unpaidAmount: 0
-      }
-      await this.loanService.updateLoanData(createPaymentDto.loanId, { status: LoanStatus.PROCESSING , isLoanPays:true,paidlLateFee: totalLateFee, paidInterset: totalInterest})
-      return await this.paymentModel.create(historyData)
-    }
-    catch (err) {
+        unpaidAmount: 0,
+      };
+      await this.loanService.updateLoanData(createPaymentDto.loanId, {
+        status: LoanStatus.PROCESSING,
+        isLoanPays: true,
+        paidlLateFee: totalLateFee,
+        paidInterset: totalInterest,
+      });
+      return await this.paymentModel.create(historyData);
+    } catch (err) {
       throw err;
     }
   }
 
   async findPaymentHistory() {
-
-    let history,count=0
+    let history,
+      count = 0;
 
     try {
       history = await this.paymentModel.aggregate([
         {
-          $lookup:{
-            from: "loans",
-          localField: "loan",
-          foreignField: "_id",
-          as: "loan"
-        }
+          $lookup: {
+            from: 'loans',
+            localField: 'loan',
+            foreignField: '_id',
+            as: 'loan',
+          },
         },
         {
-          $unwind:"$loan"
+          $unwind: '$loan',
         },
         {
-          $sort:{
-            _id:-1
-          }
-        }
-      ])
-  
-      count = await this.paymentModel.countDocuments({})
+          $sort: {
+            _id: -1,
+          },
+        },
+      ]);
+
+      count = await this.paymentModel.countDocuments({});
 
       return {
-        history,count
+        history,
+        count,
       };
-      
     } catch (error) {
-      throw new InternalServerErrorException("Failed to find payment history. ")
+      throw new InternalServerErrorException(
+        'Failed to find payment history. ',
+      );
     }
   }
 

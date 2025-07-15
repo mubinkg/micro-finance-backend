@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -21,16 +31,14 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   updatePassword(
     @Body() changePasswordDto: ChangePasswordDto,
-    @User('user') user:any
+    @User('user') user: any,
   ) {
     return this.userService.changePassword(changePasswordDto, user);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  findUser(
-    @User('user') user:any
-  ) {
+  findUser(@User('user') user: any) {
     return this.userService.findUser(user);
   }
 
@@ -44,40 +52,37 @@ export class UserController {
 
   @Get('user-list')
   @UseGuards(JwtAuthGuard)
-  findUserList(
-  ) {
+  findUserList() {
     return this.userService.getUserList();
   }
 
   @Post('signin')
   async findOne(
     @Body() userSigninDto: UserSigninDto,
-    @Res({ passthrough: true }) response: Response
+    @Res({ passthrough: true }) response: Response,
   ) {
-    try{
-      const userData = await this.userService.findOne(userSigninDto)
-      response.cookie('token', userData.token)
-      response.cookie('role', userData.user.role)
-      return userData
-    }catch(err){
-      throw err
+    try {
+      const userData = await this.userService.findOne(userSigninDto);
+      response.cookie('token', userData.token);
+      response.cookie('role', userData.user.role);
+      return userData;
+    } catch (err) {
+      throw err;
     }
   }
 
   @Post('reset-password')
-  async resetPassword(
-    @Body() email: any
-  ){
-    return this.userService.resetPassword(email?.email)
+  async resetPassword(@Body() email: any) {
+    return this.userService.resetPassword(email?.email);
   }
 
   @Get('logout')
-  logout(@Res({ passthrough: true }) response: Response){
-    response.clearCookie('token')
-    response.clearCookie('role')
+  logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('token');
+    response.clearCookie('role');
     return {
-      msg: 'Cookie deleted'
-    }
+      msg: 'Cookie deleted',
+    };
   }
 
   @Patch(':id')

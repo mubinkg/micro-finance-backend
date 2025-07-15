@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { PaymentsService } from '../service/payments.service';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
 import { UpdatePaymentDto } from '../dto/update-payment.dto';
@@ -10,22 +19,24 @@ import { LoanPaymentService } from 'src/loan/services/loan-payment.service';
 export class PaymentsController {
   constructor(
     private readonly paymentsService: PaymentsService,
-    private readonly loanPaymentService: LoanPaymentService
-  ) { }
+    private readonly loanPaymentService: LoanPaymentService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() createPaymentDto: CreatePaymentDto,
-    @User('user') user: { userId: string }
+    @User('user') user: { userId: string },
   ) {
     try {
-      const userId = user.userId
-      createPaymentDto['userId'] = userId
-      const loanDetails = await this.loanPaymentService.getLoan(createPaymentDto.loanId)
+      const userId = user.userId;
+      createPaymentDto['userId'] = userId;
+      const loanDetails = await this.loanPaymentService.getLoan(
+        createPaymentDto.loanId,
+      );
       return this.paymentsService.create(createPaymentDto, loanDetails);
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 

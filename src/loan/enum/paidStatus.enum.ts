@@ -1,4 +1,4 @@
-export enum PaidStatus{
-    PAID="Paid",
-    UNPAID="UnPaid"
+export enum PaidStatus {
+  PAID = 'Paid',
+  UNPAID = 'UnPaid',
 }

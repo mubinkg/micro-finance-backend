@@ -6,12 +6,13 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: '*'
-  })
+    origin: '*',
+  });
   app.use(morgan(':date[clf] ":method :url"'));
-  await app.listen(3001);
-  console.log(`App started at http://localhost:3001`)
+  const port = process.env.PORT || 3000; // Use environment variable or default to 3000
+  await app.listen(port, '0.0.0.0'); // Explicitly bind to 0.0.0.0
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

@@ -11,14 +11,14 @@ import { Loan, LoanSchema } from 'src/loan/entities/loan.entity';
     MongooseModule.forFeature([
       {
         schema: PaymentSchema,
-        name: Payment.name
+        name: Payment.name,
       },
       {
         schema: LoanSchema,
-        name: Loan.name
-      }
+        name: Loan.name,
+      },
     ]),
-    LoanModule
+    LoanModule,
   ],
   controllers: [PaymentsController],
   providers: [PaymentsService],
