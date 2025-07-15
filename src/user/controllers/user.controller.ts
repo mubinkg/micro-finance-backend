@@ -34,6 +34,14 @@ export class UserController {
     return this.userService.findUser(user);
   }
 
+  @Get('search-user')
+  @UseGuards(JwtAuthGuard)
+  searchUser(
+    @User('user') user:any,
+  ) {
+    return this.userService.findUser(user);
+  }
+
   @Get('user-list')
   @UseGuards(JwtAuthGuard)
   findUserList(
