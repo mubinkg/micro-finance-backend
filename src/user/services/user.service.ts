@@ -24,6 +24,10 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
+  async searchUser(query:string){
+    return await this.userModel.find({ $text: { $search: query.toLowerCase()} })
+  }
+
   async create(createUserDto: CreateUserDto) {
     try {
       createUserDto.email = createUserDto.email.toLowerCase();

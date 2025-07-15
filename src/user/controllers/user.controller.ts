@@ -17,6 +17,7 @@ import { Response } from 'express';
 import { JwtAuthGuard } from '../jwt/jwt.guard';
 import { User } from 'src/decorators/currentuser.decorator';
 import { ChangePasswordDto } from '../dto/change-password.dto';
+import { SearchUserDto } from '../dto/search-use-dto';
 
 @Controller('user')
 export class UserController {
@@ -43,11 +44,11 @@ export class UserController {
   }
 
   @Get('search-user')
-  @UseGuards(JwtAuthGuard)
   searchUser(
     @User('user') user:any,
+    @Body() searchUserDto: SearchUserDto,
   ) {
-    return this.userService.findUser(user);
+    return this.userService.searchUser(searchUserDto.query);
   }
 
   @Get('user-list')
