@@ -13,7 +13,7 @@ export class CreateLoanDto {
 
   paystubs?: string;
 
-  loanNumber?: String;
+  loanNumber?: string;
 
   @IsString()
   @IsNotEmpty()

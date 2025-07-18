@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -43,11 +42,8 @@ export class UserController {
     return this.userService.findUser(user);
   }
 
-  @Get('search-user')
-  searchUser(
-    @User('user') user:any,
-    @Body() searchUserDto: SearchUserDto,
-  ) {
+  @Post('search-user')
+  searchUser(@User('user') user: any, @Body() searchUserDto: SearchUserDto) {
     return this.userService.searchUser(searchUserDto.query);
   }
 

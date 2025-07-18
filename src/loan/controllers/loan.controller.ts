@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseInterceptors,
   UploadedFiles,
   UseGuards,
@@ -41,7 +40,6 @@ export class LoanController {
     ]),
   )
   async create(
-    @User('user') user: any,
     @Body() createLoanDto: CreateLoanDto,
     @UploadedFiles()
     files: {
@@ -50,9 +48,12 @@ export class LoanController {
       checkBack?: Express.Multer.File[];
       paystubs?: Express.Multer.File[];
     },
+    @User('user') user?: any,
   ) {
     try {
-      createLoanDto.user = user.userId;
+      createLoanDto.user = createLoanDto?.user?.trim()
+        ? createLoanDto?.user
+        : user.userId;
 
       let checkBack = files?.checkBack
         ? files?.checkBack[0]?.originalname
