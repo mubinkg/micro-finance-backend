@@ -11,8 +11,8 @@ async function bootstrap() {
     origin: '*',
   });
   app.use(morgan(':date[clf] ":method :url"'));
-  const port = process.env.PORT || 3000; // Use environment variable or default to 3000
-  await app.listen(port, '0.0.0.0'); // Explicitly bind to 0.0.0.0
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  const port = process.env.PORT || 3001; // Use environment variable or default to 3000
+  await app.listen(port); // Explicitly bind to 0.0.0.0
+  console.log(`Application is running on`);
 }
 bootstrap();
