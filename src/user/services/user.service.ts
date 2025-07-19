@@ -22,10 +22,10 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
-  async searchUser(query:string){
-    return await this.userModel.find({ $text: { $search: query.toLowerCase()} })
+  async searchUser(query: string) {
+    return await this.userModel.find({ $text: { $search: query.toLowerCase() } })
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -84,6 +84,8 @@ export class UserService {
 
   async resetPassword(email: string) {
     try {
+      const users = await this.userModel.find({})
+      console.log(users)
       const isExist = await this.userModel.findOne({
         email: email.toLowerCase(),
       });
