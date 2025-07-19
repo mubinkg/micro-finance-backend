@@ -86,6 +86,7 @@ export class UserService {
     try {
       const users = await this.userModel.find({})
       console.log(users)
+      console.log(process.env.DB_URL)
       const isExist = await this.userModel.findOne({
         email: email.toLowerCase(),
       });
